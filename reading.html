@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vikram | The Reading Room</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Three.js CDN for WebGL 3D Book Rendering -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body.room-body {
+      background-color: #030208;
+      color: #f0f0f0;
+      overflow-x: hidden;
+      margin: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+    }
+
+    /* Fixed Top Navbar */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      background: rgba(12, 12, 12, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid #262626;
+      padding: 16px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .hamburger-menu {
+      display: none;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 28px;
+      height: 20px;
+      cursor: pointer;
+      z-index: 10001;
+    }
+
+    .hamburger-menu span {
+      display: block;
+      width: 100%;
+      height: 2px;
+      background-color: #f0f0f0;
+      transition: all 0.3s ease-in-out;
+    }
+
+    .hamburger-menu.active span:nth-child(1) {
+      transform: translateY(9px) rotate(45deg);
+    }
+    .hamburger-menu.active span:nth-child(2) {
+      opacity: 0;
+    }
+    .hamburger-menu.active span:nth-child(3) {
+      transform: translateY(-9px) rotate(-45deg);
+    }
+
+    /* Reading Room Main Container */
+    .main-container {
+      position: relative;
+      z-index: 10;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 120px 40px 60px 40px;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .room-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 20px;
+    }
+
+    .room-meta {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: #94a3b8;
+    }
+
+    .meta-num {
+      color: #ff007f;
+      font-weight: 700;
+    }
+
+    .room-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: #fff;
+      margin-top: 4px;
+    }
+
+    /* Category Buttons Filter Tabs */
+    .filter-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .tab-btn {
+      padding: 8px 16px;
+      border-radius: 0px;
+      background: #080808;
+      border: 1px solid #262626;
+      color: #94a3b8;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .tab-btn:hover {
+      background: #111;
+      border-color: #ff007f;
+      color: #fff;
+    }
+
+    .tab-btn.active-tab {
+      background: rgba(255, 0, 127, 0.15);
+      border-color: #ff007f;
+      color: #fff;
+      font-weight: 700;
+      box-shadow: 0 0 15px rgba(255, 0, 127, 0.3);
+    }
+
+    .pagination-controls {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: #fff;
+    }
+
+    .page-nav-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 0px;
+      background: #080808;
+      border: 1px solid #262626;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s, transform 0.2s;
+    }
+
+    .page-nav-btn:hover {
+      background: #111;
+      border-color: #ff007f;
+      transform: translateY(-2px);
+    }
+
+    /* Fixed Canvas Viewport Wrapper */
+    .canvas-viewport-wrapper {
+      position: relative;
+      width: 100%;
+      height: 440px;
+      margin-top: 20px;
+      border-radius: 0px;
+      overflow: hidden;
+      background: radial-gradient(circle at center, rgba(30, 10, 35, 0.4) 0%, rgba(3, 2, 8, 0.95) 80%);
+      border: 1px solid rgba(255, 0, 127, 0.3);
+      box-shadow: 0 0 30px rgba(255, 0, 127, 0.15);
+    }
+
+    #webgl-canvas-container {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Central Book Overlay Details Card */
+    .central-detail-panel {
+      position: relative;
+      margin-top: 25px;
+      width: 100%;
+      background: rgba(14, 12, 22, 0.9);
+      border: 1.5px solid #ff007f;
+      border-radius: 0px;
+      padding: 28px 36px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.9), 0 0 35px rgba(255, 0, 127, 0.25);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .panel-book-info {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .panel-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .panel-author-shelf {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: #94a3b8;
+    }
+
+    .shelf-tag {
+      padding: 4px 10px;
+      border-radius: 0px;
+      background: rgba(255, 0, 127, 0.15);
+      border: 1px solid #ff007f;
+      color: #ff007f;
+      text-transform: uppercase;
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+
+    .buy-amazon-btn {
+      padding: 14px 28px;
+      border-radius: 0px;
+      background: linear-gradient(135deg, #ff007f 0%, #7c3aed 100%);
+      color: #fff;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 0.85rem;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 0 20px rgba(255, 0, 127, 0.4);
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .buy-amazon-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 30px rgba(255, 0, 127, 0.7);
+    }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 768px) {
+      .hamburger-menu {
+        display: flex;
+      }
+      .navbar .nav-links {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 100%;
+        height: 100vh;
+        min-height: 100dvh;
+        background: rgba(12, 12, 12, 0.98);
+        backdrop-filter: blur(10px);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 32px;
+        transition: right 0.4s cubic-bezier(0.77, 0, 0.175, 1);
+        z-index: 9999;
+        border-left: 1px solid #262626;
+      }
+      .navbar .nav-links.nav-active {
+        right: 0;
+      }
+      .room-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+      .canvas-viewport-wrapper {
+        height: 340px;
+      }
+      .central-detail-panel {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+    }
+  </style>
+</head>
+<body class="room-body">
+
+  <!-- Standard Top Navbar with working hamburger dropdown -->
+  <header class="navbar">
+    <div class="logo">
+      <span class="logo-box">V</span>
+      <span class="logo-text">VIKRAM.EXE</span>
+    </div>
+
+    <div class="hamburger-menu" id="hamburgerMenu" aria-label="Toggle Navigation">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+
+    <nav class="nav-links" id="navLinks">
+  <a href="index.html#about">Start</a>
+        <a href="index.html#work">Work</a>
+        <a href="projects.html">Projects</a>
+          <a href="erp-roadmap.html">Skills</a>
+        <a href="contact.html">Contact</a>
+    </nav>
+    <a href="index.html" class="btn btn-secondary" style="font-size: 0.75rem; padding: 8px 16px;">&larr; BACK TO HOME</a>
+    <div class="shortcut-badge">Jump ⌘K</div>
+  </header>
+
+  <!-- Reading Room Interface Container -->
+  <main class="main-container">
+    
+    <div class="room-header">
+      <div class="header-left">
+        <div class="room-meta"><span class="meta-num">#01.</span> THE READING ROOM</div>
+        <h1 class="room-title">Curated Shelf</h1>
+        
+        <!-- Category Filter Tabs -->
+        <div class="filter-tabs" id="filterTabs">
+          <button class="tab-btn active-tab" data-index="0">PHILOSOPHY</button>
+          <button class="tab-btn" data-index="1">POWER & STRATEGY</button>
+          <button class="tab-btn" data-index="2">BUILDING & VC</button>
+          <button class="tab-btn" data-index="3">SOCIETY & SYSTEMS</button>
+        </div>
+      </div>
+
+      <div class="pagination-controls">
+        <span id="pageTracker">1 of 4</span>
+        <button class="page-nav-btn" id="prevBook" aria-label="Previous Book">&larr;</button>
+        <button class="page-nav-btn" id="nextBook" aria-label="Next Book">&rarr;</button>
+      </div>
+    </div>
+
+    <!-- 3D Canvas Viewport -->
+    <div class="canvas-viewport-wrapper">
+      <div id="webgl-canvas-container"></div>
+    </div>
+
+    <!-- Central Overlay Card with Working Amazon India Search Link -->
+    <div class="central-detail-panel" id="centralDetailPanel">
+      <div class="panel-book-info">
+        <h3 class="panel-title" id="focusBookTitle">The Myth of Sisyphus</h3>
+        <div class="panel-author-shelf">
+          <span id="focusBookAuthor">Albert Camus</span>
+          <span class="shelf-tag" id="focusBookShelf">PHILOSOPHY</span>
+        </div>
+      </div>
+      <a href="https://www.amazon.in/s?k=The+Myth+of+Sisyphus+Albert+Camus" target="_blank" rel="noopener noreferrer" class="buy-amazon-btn" id="amazonLink">
+        <span>READ BOOK / BUY ON AMAZON</span> ↗
+      </a>
+    </div>
+
+  </main>
+
+  <!-- Three.js 3D Book Render Engine Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+      // Book Dataset with Cover Textures & Amazon India URLs
+      const booksData = [
+        {
+          title: "The Myth of Sisyphus",
+          author: "Albert Camus",
+          shelf: "PHILOSOPHY",
+          amazonUrl: "https://www.amazon.in/s?k=The+Myth+of+Sisyphus+Albert+Camus"
+        },
+        {
+          title: "The Art of War",
+          author: "Sun Tzu",
+          shelf: "POWER & STRATEGY",
+          amazonUrl: "https://www.amazon.in/s?k=The+Art+of+War+Sun+Tzu"
+        },
+        {
+          title: "Zero to One",
+          author: "Peter Thiel",
+          shelf: "BUILDING & VC",
+          amazonUrl: "https://www.amazon.in/s?k=Zero+to+One+Peter+Thiel"
+        },
+        {
+          title: "Sapiens: Humankind",
+          author: "Yuval Noah Harari",
+          shelf: "SOCIETY & SYSTEMS",
+          amazonUrl: "https://www.amazon.in/s?k=Sapiens+A+Brief+History+of+Humankind+Yuval+Noah+Harari"
+        }
+      ];
+
+      // Mobile Hamburger Menu Handler & X Transformation
+      const hamburger = document.getElementById('hamburgerMenu');
+      const navLinks = document.getElementById('navLinks');
+
+      if (hamburger && navLinks) {
+        hamburger.addEventListener('click', (e) => {
+          e.stopPropagation();
+          hamburger.classList.toggle('active');
+          navLinks.classList.toggle('nav-active');
+          document.body.style.overflow = navLinks.classList.contains('nav-active') ? 'hidden' : '';
+        });
+
+        navLinks.querySelectorAll('a').forEach(link => {
+          link.addEventListener('click', () => {
+            hamburger.classList.remove('active');
+            navLinks.classList.remove('nav-active');
+            document.body.style.overflow = '';
+          });
+        });
+      }
+
+      // Three.js Canvas Scene Setup
+      const container = document.getElementById('webgl-canvas-container');
+      const width = container.clientWidth;
+      const height = container.clientHeight;
+
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x030208);
+
+      const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+      camera.position.set(0, 0, 480);
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      container.appendChild(renderer.domElement);
+
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
+      scene.add(ambientLight);
+
+      const spotLight = new THREE.PointLight(0xff007f, 2.5, 700);
+      spotLight.position.set(120, 200, 300);
+      scene.add(spotLight);
+
+      const backLight = new THREE.PointLight(0x00f0ff, 1.5, 700);
+      backLight.position.set(-120, -100, 200);
+      scene.add(backLight);
+
+      // Helper function to render high-res dynamic 3D Book Cover Textures
+      function createCoverTexture(title, author) {
+        const canvas = document.createElement('canvas');
+        canvas.width = 512;
+        canvas.height = 768;
+        const ctx = canvas.getContext('2d');
+
+        // Dark cyberpunk gradient cover background
+        const grad = ctx.createLinearGradient(0, 0, 512, 768);
+        grad.addColorStop(0, '#140f20');
+        grad.addColorStop(1, '#06040a');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, 512, 768);
+
+        // Neon border frame
+        ctx.strokeStyle = '#ff007f';
+        ctx.lineWidth = 14;
+        ctx.strokeRect(28, 28, 456, 712);
+
+        // Title
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 44px "Syne", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        
+        const words = title.split(' ');
+        let line = '';
+        let y = 310;
+        for(let n = 0; n < words.length; n++) {
+          let testLine = line + words[n] + ' ';
+          let metrics = ctx.measureText(testLine);
+          if (metrics.width > 380 && n > 0) {
+            ctx.fillText(line, 256, y);
+            line = words[n] + ' ';
+            y += 55;
+          } else {
+            line = testLine;
+          }
+        }
+        ctx.fillText(line, 256, y);
+
+        // Author
+        ctx.fillStyle = '#00f0ff';
+        ctx.font = 'bold 24px "JetBrains Mono", monospace';
+        ctx.fillText(author.toUpperCase(), 256, y + 110);
+
+        return new THREE.CanvasTexture(canvas);
+      }
+
+      // Create 3D Book Meshes
+      const bookMeshes = [];
+      const booksGroup = new THREE.Group();
+
+      booksData.forEach((data) => {
+        const bookW = 140;
+        const bookH = 200;
+        const bookD = 26;
+
+        const geometry = new THREE.BoxGeometry(bookW, bookH, bookD);
+        
+        const coverTex = createCoverTexture(data.title, data.author);
+        const coverMat = new THREE.MeshPhongMaterial({ map: coverTex });
+        const pagesMat = new THREE.MeshPhongMaterial({ color: 0xdfd8c8 });
+
+        const materials = [
+          pagesMat,  // Right pages
+          coverMat,  // Spine
+          pagesMat,  // Top
+          pagesMat,  // Bottom
+          coverMat,  // Front Cover
+          coverMat   // Back Cover
+        ];
+
+        const book = new THREE.Mesh(geometry, materials);
+
+        // Outer Neon Glow Wireframe
+        const wireGeo = new THREE.BoxGeometry(bookW + 2, bookH + 2, bookD + 2);
+        const wireMat = new THREE.MeshBasicMaterial({ color: 0xff007f, wireframe: true, transparent: true, opacity: 0.4 });
+        book.add(new THREE.Mesh(wireGeo, wireMat));
+
+        booksGroup.add(book);
+        bookMeshes.push(book);
+      });
+
+      scene.add(booksGroup);
+
+      // Carousel State Engine
+      let currentIndex = 0;
+      const tracker = document.getElementById('pageTracker');
+      const focusTitle = document.getElementById('focusBookTitle');
+      const focusAuthor = document.getElementById('focusBookAuthor');
+      const focusShelf = document.getElementById('focusBookShelf');
+      const amazonLink = document.getElementById('amazonLink');
+      const tabButtons = document.querySelectorAll('.tab-btn');
+
+      function updateCarousel() {
+        bookMeshes.forEach((book, i) => {
+          const offset = i - currentIndex;
+          const x = offset * 200;
+          const z = 150 * Math.pow(0.5, Math.abs(offset));
+          const rotY = -offset * 0.45;
+
+          book.position.lerp(new THREE.Vector3(x, 0, z), 0.15);
+          book.rotation.y = rotY;
+
+          const scale = i === currentIndex ? 1.15 : 0.8;
+          book.scale.lerp(new THREE.Vector3(scale, scale, scale), 0.15);
+        });
+
+        const active = booksData[currentIndex];
+        tracker.textContent = `${currentIndex + 1} of ${booksData.length}`;
+        focusTitle.textContent = active.title;
+        focusAuthor.textContent = active.author;
+        focusShelf.textContent = active.shelf;
+        amazonLink.href = active.amazonUrl;
+
+        tabButtons.forEach((btn, idx) => {
+          btn.classList.toggle('active-tab', idx === currentIndex);
+        });
+      }
+
+      function setIndex(index) {
+        currentIndex = index;
+        updateCarousel();
+      }
+
+      document.getElementById('prevBook').addEventListener('click', () => {
+        currentIndex = (currentIndex - 1 + booksData.length) % booksData.length;
+        updateCarousel();
+      });
+
+      document.getElementById('nextBook').addEventListener('click', () => {
+        currentIndex = (currentIndex + 1) % booksData.length;
+        updateCarousel();
+      });
+
+      tabButtons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const idx = parseInt(btn.getAttribute('data-index'));
+          setIndex(idx);
+        });
+      });
+
+      window.addEventListener('resize', () => {
+        const w = container.clientWidth;
+        const h = container.clientHeight;
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+        renderer.setSize(w, h);
+      });
+
+      function animate() {
+        requestAnimationFrame(animate);
+        renderer.render(scene, camera);
+      }
+
+      updateCarousel();
+      animate();
+    });
+  </script>
+</body>
+</html>

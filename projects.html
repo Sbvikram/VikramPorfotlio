@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vikram | Enterprise Projects & Deployments</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="archive/archive.css">
+  <link rel="stylesheet" href="archive/work.css">
+  <link rel="stylesheet" href="css/timeline.css">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* --- Custom Sharp Edges & Purple Neon Glow / 3D Hover Effect for Project Cards --- */
+    .project-card {
+      border-radius: 0px !important; /* Sharp straight edges */
+      border: 1px solid #ff007f !important; /* Permanent Electric Purple/Pink Neon Border */
+      background: var(--card-bg, #161616);
+      box-shadow: 0 0 15px rgba(255, 0, 127, 0.25) !important;
+      transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), 
+                  box-shadow 0.2s cubic-bezier(0.25, 1, 0.5, 1), 
+                  border-color 0.2s ease;
+      will-change: transform, box-shadow;
+      position: relative;
+      padding: 30px;
+      margin-bottom: 24px;
+    }
+
+    /* Multi-Layered 3D Purple Neon Hover Effect on Project Cards */
+    .project-card:hover {
+      transform: translate(-4px, -4px) !important;
+      border-color: #ff007f !important;
+      box-shadow: 5px 5px 0px 0px #ffffff,
+                  10px 10px 0px 0px #a855f7,
+                  0 0 30px rgba(168, 85, 247, 0.75),
+                  0 0 60px rgba(255, 0, 127, 0.35) !important;
+    }
+
+    /* Project Tags Styling */
+    .project-tags-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 20px;
+    }
+
+    .project-tag {
+      border-radius: 0px !important;
+      border: 1px solid #262626 !important;
+      background: #111111 !important;
+      color: #94a3b8 !important;
+      padding: 6px 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      display: inline-block;
+      transition: transform 0.15s cubic-bezier(0.25, 1, 0.5, 1), 
+                  box-shadow 0.15s cubic-bezier(0.25, 1, 0.5, 1), 
+                  border-color 0.15s ease, 
+                  color 0.15s ease, 
+                  background-color 0.15s ease;
+      cursor: pointer;
+    }
+
+    .project-tag:hover {
+      transform: translate(-2px, -2px) !important;
+      background-color: #a855f7 !important;
+      color: #000000 !important;
+      border-color: #ff007f !important;
+      font-weight: 700 !important;
+      box-shadow: 3px 3px 0px 0px #ffffff,
+                  6px 6px 0px 0px #a855f7,
+                  0 0 15px rgba(168, 85, 247, 0.8) !important;
+    }
+
+    /* Section Styling */
+    .projects-container {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    .project-header-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .project-client-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.5rem;
+      color: #ffffff;
+      font-weight: 700;
+    }
+
+    .project-platform-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      background: rgba(255, 0, 127, 0.1);
+      border: 1px solid #ff007f;
+      color: #ff007f;
+      padding: 4px 10px;
+    }
+
+    .project-role {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      color: #ff5500;
+      margin-bottom: 15px;
+    }
+
+    .project-desc {
+      color: #cbd5e1;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .project-outcomes-header {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: #ffffff;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+
+    .project-bullet-list {
+      list-style-type: none;
+      padding-left: 0;
+    }
+
+    .project-bullet-list li {
+      position: relative;
+      padding-left: 18px;
+      margin-bottom: 8px;
+      color: #94a3b8;
+      font-size: 0.92rem;
+    }
+
+    .project-bullet-list li::before {
+      content: "▪";
+      position: absolute;
+      left: 0;
+      color: #a855f7;
+    }
+
+    /* Back Button */
+    .back-nav {
+      margin: 30px 0 20px 0;
+    }
+
+    .btn, a.btn {
+      border-radius: 0px !important;
+      text-decoration: none;
+      display: inline-block;
+      padding: 12px 24px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      background: #161616;
+      color: #ffffff;
+      border: 1px solid #ff007f;
+      transition: all 0.15s ease;
+    }
+
+    .btn:hover {
+      background-color: #ff007f !important;
+      color: #000000 !important;
+      transform: translate(-3px, -3px);
+      box-shadow: 4px 4px 0px 0px #ffffff,
+                  8px 8px 0px 0px #a855f7,
+                  0 0 25px rgba(255, 0, 127, 0.85) !important;
+    }
+
+    /* Hamburger Active Transform Fix */
+    .hamburger-menu.active span:nth-child(1) {
+      transform: translateY(9px) rotate(45deg);
+    }
+    .hamburger-menu.active span:nth-child(2) {
+      opacity: 0;
+    }
+    .hamburger-menu.active span:nth-child(3) {
+      transform: translateY(-9px) rotate(-45deg);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Main Website Content -->
+  <div id="main-content">
+    
+    <!-- Header / Navbar -->
+    <header class="navbar">
+      <div class="logo">
+        <span class="logo-box">V</span>
+        <span class="logo-text">VIKRAM.EXE</span>
+      </div>
+
+      <!-- Hamburger Menu Toggle for Mobile -->
+      <div class="hamburger-menu" id="hamburgerMenu" aria-label="Toggle Navigation">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+
+      <nav class="nav-links" id="navLinks">
+    <a href="index.html#about">Start</a>
+        <a href="index.html#work">Work</a>
+        <a href="projects.html">Projects</a>
+          <a href="erp-roadmap.html">Skills</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+      <div class="shortcut-badge">Jump ⌘K</div>
+    </header>
+
+    <!-- Projects Portfolio Section -->
+    <div class="projects-container">
+      
+      <div class="back-nav">
+        <a href="index.html" class="btn">&larr; BACK TO MAIN TERMINAL</a>
+      </div>
+
+      <div class="section-tag" style="margin-top: 20px;">04 / ENTERPRISE DEPLOYMENTS & PORTFOLIO</div>
+      <h1 class="section-title" style="margin-bottom: 10px;">Client Implementations & Cloud Builds</h1>
+      <p style="color: var(--text-muted); margin-bottom: 40px; font-size: 1.05rem;">
+        Detailed breakdown of enterprise cloud ERP implementations, finance workflow configurations, and technical customizations across Business Central, Sage Intacct, and Dynamics GP.
+      </p>
+
+      <!-- Project 1: Ferrara Fire -->
+      <div class="project-card">
+        <div class="project-header-flex">
+          <h3 class="project-client-title">Ferrara Fire Apparatus</h3>
+          <span class="project-platform-badge">Sage Intacct & Azure SSO</span>
+        </div>
+        <p class="project-role">Technical Functional Consultant & Cloud Integration Specialist</p>
+        <p class="project-desc">
+          Engineered and executed an end-to-end technical and functional deployment of Sage Intacct integrated within secure Microsoft Azure virtual machine environments paired with Azure Active Directory single sign-on.
+        </p>
+        
+        <div class="project-outcomes-header">Key Finance Modules & Technical Setup</div>
+        <ul class="project-bullet-list">
+          <li>Configured core financial ledgers including <strong>General Ledger (GL), Accounts Payable (AP), and Cash Management</strong>.</li>
+          <li>Set up multi-entity purchasing workflows and automated vendor disbursement controls.</li>
+          <li>Executed custom <strong>SQL queries and field customizations</strong> for precise financial reporting and data mapping.</li>
+          <li>Deployed secure Azure VM hosting architectures and IAM access boundary policies.</li>
+        </ul>
+
+        <div class="project-tags-container">
+          <span class="project-tag">Sage Intacct</span>
+          <span class="project-tag">Azure VM</span>
+          <span class="project-tag">Azure AD SSO</span>
+          <span class="project-tag">General Ledger</span>
+          <span class="project-tag">SQL Customization</span>
+        </div>
+      </div>
+
+      <!-- Project 2: Metro Tulsa / Tulsa Transit -->
+      <div class="project-card">
+        <div class="project-header-flex">
+          <h3 class="project-client-title">Metro Tulsa / Tulsa Transit</h3>
+          <span class="project-platform-badge">Dynamics 365 Business Central & Azure IAM</span>
+        </div>
+        <p class="project-role">ERP Implementation Specialist</p>
+        <p class="project-desc">
+          Spearheaded the enterprise migration and implementation of Microsoft Dynamics 365 Business Central alongside Azure identity and access management infrastructure for public transit operations.
+        </p>
+
+        <div class="project-outcomes-header">Key Finance Modules & Technical Setup</div>
+        <ul class="project-bullet-list">
+          <li>Configured public sector fund accounting, <strong>Bank Reconciliation, Purchasing, and Accounts Payable</strong> workflows.</li>
+          <li>Implemented custom distribution tables and dimension setups for granular expense tracking.</li>
+          <li>Integrated JavaScript-based web extensions and customized data migration scripts.</li>
+          <li>Established robust user provisioning and role-based access control via Azure AD / Entra ID.</li>
+        </ul>
+
+        <div class="project-tags-container">
+          <span class="project-tag">Business Central</span>
+          <span class="project-tag">Bank Reconciliation</span>
+          <span class="project-tag">Purchasing / AP</span>
+          <span class="project-tag">Azure IAM</span>
+          <span class="project-tag">JavaScript Customization</span>
+        </div>
+      </div>
+
+      <!-- Project 3: 180 Medical -->
+      <div class="project-card">
+        <div class="project-header-flex">
+          <h3 class="project-client-title">180 Medical</h3>
+          <span class="project-platform-badge">Sage Intacct & PaperSave AP</span>
+        </div>
+        <p class="project-role">Techno-Functional Consultant</p>
+        <p class="project-desc">
+          Streamlined healthcare supply chain financial operations by implementing automated invoice processing and document capture workflows across Sage Intacct and PaperSave.
+        </p>
+
+        <div class="project-outcomes-header">Key Finance Modules & Technical Setup</div>
+        <ul class="project-bullet-list">
+          <li>Optimized <strong>Procure-to-Pay (P2P) cycles</strong>, purchase orders, and vendor invoice matching.</li>
+          <li>Configured OCR template routing and automated approval hierarchies in PaperSave.</li>
+          <li>Executed backend database troubleshooting and custom SQL scripts to reconcile high-volume financial transactions.</li>
+        </ul>
+
+        <div class="project-tags-container">
+          <span class="project-tag">Sage Intacct</span>
+          <span class="project-tag">PaperSave OCR</span>
+          <span class="project-tag">Procure-to-Pay</span>
+          <span class="project-tag">SQL Diagnostics</span>
+        </div>
+      </div>
+
+      <!-- Project 4: Crude Corporation -->
+      <div class="project-card">
+        <div class="project-header-flex">
+          <h3 class="project-client-title">Kroot Corporation</h3>
+          <span class="project-platform-badge">Microsoft Dynamics GP & SQL</span>
+        </div>
+        <p class="project-role">ERP Technical Consultant</p>
+        <p class="project-desc">
+          Optimized energy sector financial ledgers and asset management modules within Microsoft Dynamics GP, ensuring strict regulatory reporting compliance.
+        </p>
+
+        <div class="project-outcomes-header">Key Finance Modules & Technical Setup</div>
+        <ul class="project-bullet-list">
+          <li>Configured <strong>General Ledger, Fixed Assets, and Cash Management</strong> modules.</li>
+          <li>Resolved complex inventory valuation and purchasing distribution table discrepancies via direct SQL scripting.</li>
+          <li>Designed customized financial reporting views and automated data backups.</li>
+        </ul>
+
+        <div class="project-tags-container">
+          <span class="project-tag">Dynamics GP</span>
+          <span class="project-tag">Fixed Assets</span>
+          <span class="project-tag">SQL Scripting</span>
+          <span class="project-tag">General Ledger</span>
+        </div>
+      </div>
+
+      <!-- Project 5: Texas State University -->
+      <div class="project-card">
+        <div class="project-header-flex">
+          <h3 class="project-client-title">Texas State University</h3>
+          <span class="project-platform-badge">Sage Intacct & Custom Integrations</span>
+        </div>
+        <p class="project-role">ERP Technical Consultant</p>
+        <p class="project-desc">
+          Deployed institutional financial management workflows and federated authentication protocols to support multi-departmental accounting structures.
+        </p>
+
+        <div class="project-outcomes-header">Key Finance Modules & Technical Setup</div>
+        <ul class="project-bullet-list">
+          <li>Configured department-level budget controls, encumbrance accounting, and Accounts Receivable modules.</li>
+          <li>Integrated single sign-on authentication models via SAML 2.0 and Azure AD.</li>
+          <li>Utilized JavaScript customizations and API webhooks for third-party system data synchronization.</li>
+        </ul>
+
+        <div class="project-tags-container">
+          <span class="project-tag">Sage Intacct</span>
+          <span class="project-tag">Accounts Receivable</span>
+          <span class="project-tag">SAML / SSO</span>
+          <span class="project-tag">API Integrations</span>
+        </div>
+      </div>
+
+      <!-- Project 6: Proveway -->
+      <div class="project-card">
+        <div class="project-header-flex">
+          <h3 class="project-client-title">Proveway (E-Commerce Sync Suite)</h3>
+          <span class="project-platform-badge">Sage Intacct & Shopify Connector</span>
+        </div>
+        <p class="project-role">Automation Engineer & ERP Consultant</p>
+        <p class="project-desc">
+          Engineered high-performance automated synchronization engines connecting high-growth e-commerce storefronts directly to Sage Intacct financial ledgers.
+        </p>
+
+        <div class="project-outcomes-header">Key Finance Modules & Technical Setup</div>
+        <ul class="project-bullet-list">
+          <li>Automated order, customer, and payment settlement matching into <strong>Accounts Receivable and General Ledger</strong>.</li>
+          <li>Developed custom JavaScript mapping scripts and optimized SQL database query performance for real-time syncs.</li>
+          <li>Configured Azure VM hosting environments to guarantee 99.9% integration uptime.</li>
+        </ul>
+
+        <div class="project-tags-container">
+          <span class="project-tag">Sage Intacct</span>
+          <span class="project-tag">Shopify Sync</span>
+          <span class="project-tag">JavaScript / SQL</span>
+          <span class="project-tag">Azure VMs</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer id="contact" class="footer" style="margin-top: 60px;">
+      <p>&copy; 2026 Vikram. Designed & Built with Custom CSS/JS.</p>
+    </footer>
+
+  </div>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vikram | The Listening Room</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/listening.css">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="listening-room-body">
+
+  <!-- Header / Navbar -->
+  <header class="navbar">
+    <div class="logo">
+      <span class="logo-box">V</span>
+      <span class="logo-text">VIKRAM.EXE</span>
+    </div>
+    <nav class="nav-links">
+  <a href="index.html#about">Start</a>
+        <a href="index.html#work">Work</a>
+        <a href="projects.html">Projects</a>
+          <a href="erp-roadmap.html">Skills</a>
+        <a href="contact.html">Contact</a>
+    </nav>
+    <a href="index.html" class="btn btn-secondary" style="font-size: 0.75rem; padding: 8px 16px;">&larr; BACK TO HOME</a>
+  </header>
+
+  <!-- Listening Room Main Section -->
+  <main class="listening-container">
+    <div class="listening-header">
+      <div class="section-tag">🎵 02. THE LISTENING ROOM</div>
+      <h1 class="listening-title">Curated Playlists & Soundscapes</h1>
+    </div>
+
+    <!-- Interface Box -->
+    <div class="player-interface-card">
+      
+      <!-- Left Sidebar: Playlists Only (5 Items) -->
+      <aside class="playlist-sidebar">
+        <div class="sidebar-top-bar">
+          <span class="sidebar-title">MY PLAYLISTS (5)</span>
+          <span class="sidebar-subtitle">SELECT TO LOAD</span>
+        </div>
+
+        <div class="playlist-list">
+          <!-- Playlist 1: Today's Top Hits -->
+          <div class="playlist-item active" data-spotify-type="playlist" data-spotify-id="37i9dQZF1DXcBWIGoYBM5M" data-title="Life is Beautiful 🌹">
+            <div class="playlist-badge">NOSTALGIA & MELLOW</div>
+            <div class="playlist-name">Life is Beautiful 🌹</div>
+            <div class="playlist-tracks-count">100 tracks</div>
+          </div>
+
+          <!-- Playlist 2: Rock Classics -->
+          <div class="playlist-item" data-spotify-type="playlist" data-spotify-id="37i9dQZF1DWXRqgorJj26U" data-title="Rage 🔥">
+            <div class="playlist-badge badge-red">HIGH ADRENALINE</div>
+            <div class="playlist-name">Rage 🔥</div>
+            <div class="playlist-tracks-count">100 tracks</div>
+          </div>
+
+          <!-- Playlist 4: Lo-Fi Beats -->
+          <div class="playlist-item" data-spotify-type="playlist" data-spotify-id="37i9dQZF1DWWQRwui0ExPn" data-title="No expectations, No surprises">
+            <div class="playlist-badge badge-gray">CHILL INDIE & LO-FI</div>
+            <div class="playlist-name">No expectations, No surprises</div>
+            <div class="playlist-tracks-count">27 tracks</div>
+          </div>
+
+          <!-- Playlist 5: Peaceful Piano -->
+          <div class="playlist-item" data-spotify-type="playlist" data-spotify-id="37i9dQZF1DX4sWSpwq3LiO" data-title="FeelsLikeAMovie 🎬">
+            <div class="playlist-badge badge-brown">CINEMATIC SOUNDSCAPES</div>
+            <div class="playlist-name">FeelsLikeAMovie 🎬</div>
+            <div class="playlist-tracks-count">94 tracks</div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Right Main: Active Spotify Embed Player + Individual Tracks Section -->
+      <section class="player-main">
+        <div class="player-main-header">
+          <div class="current-playlist-heading" id="active-playlist-title">Life is Beautiful 🌹</div>
+          <a href="https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M" id="spotify-external-link" target="_blank" class="open-spotify-btn">Open Spotify &nearr;</a>
+        </div>
+
+        <!-- Embedded iFrame Spotify Player -->
+        <div class="spotify-embed-container">
+          <iframe id="spotify-iframe"
+            style="border-radius:12px" 
+            src="https://open.spotify.com/embed/playlist/37i9dQZF1DXcBWIGoYBM5M?utm_source=generator&theme=0" 
+            width="100%" 
+            height="500" 
+            frameBorder="0" 
+            allowfullscreen="" 
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+            loading="lazy">
+          </iframe>
+        </div>
+
+        <!-- Right Side Individual Track Cards Section -->
+        <div class="tracks-section" style="margin-top: 30px; display: flex; flex-direction: column; gap: 20px;">
+          <div class="section-tag" style="margin-bottom: -10px;">🎧 FEATURED TRACKS</div>
+
+          <!-- Track 1: Midnight City -->
+          <div class="card work-card" style="padding: 16px; background: #161616; border: 1px solid #262626; border-radius: 8px;">
+            <div class="playlist-badge badge-gray">SYNTHWAVE & RETRO</div>
+            <div class="playlist-name" style="font-size: 1.1rem; margin: 6px 0;">Midnight City</div>
+            <div class="playlist-tracks-count" style="margin-bottom: 12px;">Spotify Audio</div>
+            <div class="spotify-embed-wrapper">
+              <iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/track/1eyzqe2QqGZUmfcPZtrIyt?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+            </div>
+          </div>
+
+          <!-- Track 2: The Less I Know The Better -->
+          <div class="card work-card" style="padding: 16px; background: #161616; border: 1px solid #262626; border-radius: 8px;">
+            <div class="playlist-badge badge-orange">INDIE GROOVE</div>
+            <div class="playlist-name" style="font-size: 1.1rem; margin: 6px 0;">The Less I Know The Better</div>
+            <div class="playlist-tracks-count" style="margin-bottom: 12px;">Spotify Audio</div>
+            <div class="spotify-embed-wrapper">
+              <iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/track/6K4t31amVTZDgR3sKmwUJJ?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+            </div>
+          </div>
+
+          <!-- Track 3: Get Lucky -->
+          <div class="card work-card" style="padding: 16px; background: #161616; border: 1px solid #262626; border-radius: 8px;">
+            <div class="playlist-badge badge-brown">DISCO VIBES</div>
+            <div class="playlist-name" style="font-size: 1.1rem; margin: 6px 0;">Get Lucky</div>
+            <div class="playlist-tracks-count" style="margin-bottom: 12px;">Spotify Audio</div>
+            <div class="spotify-embed-wrapper">
+              <iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/track/69kOkLUCkxIZYexIgSG8rq?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Interactive JavaScript -->
+  <script src="js/main.js">
+    document.addEventListener('DOMContentLoaded', () => {
+      const playlistItems = document.querySelectorAll('.playlist-item');
+      const spotifyIframe = document.getElementById('spotify-iframe');
+      const activeTitle = document.getElementById('active-playlist-title');
+      const spotifyExternalLink = document.getElementById('spotify-external-link');
+
+      playlistItems.forEach(item => {
+        item.addEventListener('click', () => {
+          playlistItems.forEach(p => p.classList.remove('active'));
+          item.classList.add('active');
+
+          const spotifyId = item.getAttribute('data-spotify-id');
+          const spotifyType = item.getAttribute('data-spotify-type') || 'playlist';
+          const title = item.getAttribute('data-title');
+
+          activeTitle.textContent = title;
+          spotifyIframe.src = `https://open.spotify.com/embed/${spotifyType}/${spotifyId}?utm_source=generator&theme=0`;
+          
+          if (spotifyExternalLink) {
+            spotifyExternalLink.href = `https://open.spotify.com/${spotifyType}/${spotifyId}`;
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

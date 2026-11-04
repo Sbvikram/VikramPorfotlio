@@ -1,0 +1,551 @@
+/* ====================================
+   ERP Implementation Roadmap Styles
+   ==================================== */
+.roadmap-body {
+  background-color: #0c0c0c;
+  color: var(--text-main, #f0f0f0);
+  position: relative;
+}
+
+.roadmap-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 24px 80px 24px;
+}
+
+.roadmap-header {
+  margin-bottom: 40px;
+}
+
+.roadmap-title {
+  font-family: var(--font-heading, 'Syne', sans-serif);
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-top: 8px;
+  margin-bottom: 12px;
+}
+
+.roadmap-subtitle {
+  font-family: var(--font-body, 'Plus Jakarta Sans', sans-serif);
+  font-size: 1rem;
+  color: #a0a0a0;
+  max-width: 780px;
+  line-height: 1.6;
+}
+
+.section-heading {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.9rem;
+  letter-spacing: 0.1em;
+  color: var(--signal, #ff5500);
+  margin-bottom: 24px;
+  text-transform: uppercase;
+}
+
+/* ------------------------------------
+   Broader Animated Scroll Prompt
+   ------------------------------------ */
+.scroll-prompt-badge {
+  position: fixed;
+  top: 90px;
+  right: 24px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(18, 18, 18, 0.95);
+  border: 3px solid var(--signal, #ff5500);
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--signal, #ff5500);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 6px 6px 0px 0px var(--signal, #ff5500);
+  transition: opacity 0.8s ease;
+  pointer-events: none;
+}
+
+.prompt-arrow {
+  font-size: 1.5rem;
+  font-weight: 900;
+  animation: bounceBroader 0.8s infinite alternate ease-in-out;
+}
+
+@keyframes bounceBroader {
+  0% { transform: translateY(0) scale(1); opacity: 0.4; }
+  100% { transform: translateY(8px) scale(1.25); opacity: 1; }
+}
+
+/* ------------------------------------
+   Talking Tom Style Roaming Cat
+   ------------------------------------ */
+.roaming-cat {
+  position: absolute;
+  z-index: 50;
+  pointer-events: none;
+  transition: all 5.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.cat-avatar {
+  filter: drop-shadow(0 10px 20px rgba(0,0,0,0.85));
+  animation: tomGentleBounce 0.6s infinite alternate ease-in-out;
+}
+
+@keyframes tomGentleBounce {
+  0% { transform: translateY(0) rotate(-1.5deg); }
+  100% { transform: translateY(-6px) rotate(1.5deg); }
+}
+
+/* Waving Arm & Paw Animation */
+.waving-arm {
+  transform-origin: 95px 102px;
+  animation: tomWaveArm 0.5s infinite alternate ease-in-out;
+}
+
+@keyframes tomWaveArm {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(-22deg); }
+}
+
+.cat-speech-bubble {
+  position: absolute;
+  top: -38px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--signal, #ff5500);
+  color: #000;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 6px;
+  white-space: nowrap;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.6);
+  animation: popBubble 0.3s ease;
+}
+
+@keyframes popBubble {
+  0% { transform: translateX(-50%) scale(0.8); opacity: 0; }
+  100% { transform: translateX(-50%) scale(1); opacity: 1; }
+}
+
+.cat-speech-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 6px 6px 0 6px;
+  border-style: solid;
+  border-color: var(--signal, #ff5500) transparent transparent transparent;
+}
+
+/* ------------------------------------
+   Lifecycle Methodology Flow Cards (Equal Height)
+   ------------------------------------ */
+.methodology-section {
+  margin-bottom: 60px;
+}
+
+.roadmap-timeline-flow {
+  display: flex;
+  align-items: stretch;
+  gap: 16px;
+}
+
+.flow-card {
+  flex: 1;
+  background: #141414;
+  border: 2px solid var(--border-color, #262626);
+  padding: 24px 20px;
+  border-radius: 6px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  transition: transform 90ms steps(2, end), border-color 0.2s ease;
+}
+
+.flow-card:hover {
+  border-color: var(--signal, #ff5500);
+  transform: translateY(-4px);
+}
+
+.step-num {
+  font-family: var(--font-mono, monospace);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.15);
+  position: absolute;
+  top: 16px;
+  right: 16px;
+}
+
+.step-badge {
+  display: inline-block;
+  align-self: flex-start;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.65rem;
+  color: var(--signal, #ff5500);
+  border: 1px solid rgba(255, 85, 0, 0.4);
+  padding: 2px 6px;
+  border-radius: 3px;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+
+.step-title {
+  font-family: var(--font-heading, 'Syne', sans-serif);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.step-desc {
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.8rem;
+  color: #888;
+  line-height: 1.45;
+  margin-top: auto;
+}
+
+/* ------------------------------------
+   Modules Grid Layout
+   ------------------------------------ */
+.modules-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 24px;
+}
+
+.module-card {
+  background: #141414;
+  border: 2px solid var(--border-color, #262626);
+  padding: 24px;
+  border-radius: 6px;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.module-card:hover {
+  border-color: #444;
+  transform: translateY(-2px);
+}
+
+.highlight-card {
+  border-color: rgba(255, 85, 0, 0.4);
+  background: #191412;
+}
+
+.module-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.module-icon {
+  font-size: 1.2rem;
+}
+
+.module-tag {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.65rem;
+  color: var(--signal, #ff5500);
+  border: 1px solid rgba(255, 85, 0, 0.4);
+  padding: 2px 6px;
+  border-radius: 3px;
+  text-transform: uppercase;
+}
+
+.badge-red { color: #ff4444; border-color: rgba(255, 68, 68, 0.4); }
+.badge-orange { color: #ff8800; border-color: rgba(255, 136, 0, 0.4); }
+.badge-gray { color: #aaa; border-color: rgba(170, 170, 170, 0.4); }
+.badge-brown { color: #d2b48c; border-color: rgba(210, 180, 140, 0.4); }
+
+.module-title {
+  font-family: var(--font-heading, 'Syne', sans-serif);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 14px;
+}
+
+.module-bullets {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.module-bullets li {
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.85rem;
+  color: #b0b0b0;
+  position: relative;
+  padding-left: 16px;
+  line-height: 1.4;
+}
+
+.module-bullets li::before {
+  content: '▪';
+  position: absolute;
+  left: 0;
+  color: var(--signal, #ff5500);
+  font-size: 0.8rem;
+}
+
+/* Responsiveness */
+@media (max-width: 900px) {
+  .roadmap-timeline-flow {
+    flex-direction: column;
+  }
+  .modules-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ====================================
+   ERP Implementation Roadmap Styles
+   ==================================== */
+.roadmap-body {
+  background-color: #030208;
+  color: var(--text-main, #f0f0f0);
+  position: relative;
+  font-family: var(--font-body, 'Plus Jakarta Sans', sans-serif);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.roadmap-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 24px 80px 24px;
+  position: relative;
+  z-index: 10;
+}
+
+.roadmap-header {
+  margin-bottom: 40px;
+}
+
+.roadmap-title {
+  font-family: var(--font-heading, 'Syne', sans-serif);
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-top: 8px;
+  margin-bottom: 12px;
+  color: #fff;
+  text-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+}
+
+.roadmap-subtitle {
+  font-size: 1rem;
+  color: #94a3b8;
+  max-width: 780px;
+  line-height: 1.6;
+}
+
+.section-heading {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.9rem;
+  letter-spacing: 0.1em;
+  color: #00f0ff; /* Bright Cyan Neon Accent */
+  margin-bottom: 24px;
+  text-transform: uppercase;
+}
+
+/* ------------------------------------
+   Lifecycle Methodology Flow Cards
+   ------------------------------------ */
+.methodology-section {
+  margin-bottom: 60px;
+}
+
+.roadmap-timeline-flow {
+  display: flex;
+  align-items: stretch;
+  gap: 16px;
+}
+
+.flow-card {
+  flex: 1;
+  background: #141414;
+  border: 1px solid #262626;
+  padding: 24px 20px;
+  border-radius: 0px !important;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), 
+              box-shadow 0.3s cubic-bezier(0.25, 1, 0.5, 1), 
+              border-color 0.3s ease;
+}
+
+.flow-card:hover {
+  transform: translate(-4px, -4px) !important;
+  border-color: #00f0ff !important;
+  box-shadow: 5px 5px 0px 0px #ffffff,
+              10px 10px 0px 0px #a855f7,
+              0 0 30px rgba(0, 240, 255, 0.65),
+              0 0 60px rgba(168, 85, 247, 0.3) !important;
+}
+
+.step-num {
+  font-family: var(--font-mono, monospace);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.15);
+  position: absolute;
+  top: 16px;
+  right: 16px;
+}
+
+.step-badge {
+  display: inline-block;
+  align-self: flex-start;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.65rem;
+  color: #00f0ff;
+  border: 1px solid rgba(0, 240, 255, 0.4);
+  padding: 2px 6px;
+  border-radius: 0px;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+
+.step-title {
+  font-family: var(--font-heading, 'Syne', sans-serif);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.step-desc {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  line-height: 1.45;
+  margin-top: auto;
+}
+
+/* ------------------------------------
+   Modules Grid Layout
+   ------------------------------------ */
+.modules-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 24px;
+}
+
+.module-card {
+  background: #141414;
+  border: 1px solid #262626;
+  padding: 24px;
+  border-radius: 0px !important;
+  transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), 
+              box-shadow 0.3s cubic-bezier(0.25, 1, 0.5, 1), 
+              border-color 0.3s ease;
+  position: relative;
+}
+
+.module-card:hover {
+  transform: translate(-4px, -4px) !important;
+  border-color: #ff007f !important;
+  box-shadow: 5px 5px 0px 0px #ffffff,
+              10px 10px 0px 0px #a855f7,
+              0 0 30px rgba(255, 0, 127, 0.65),
+              0 0 60px rgba(168, 85, 247, 0.3) !important;
+}
+
+.module-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.module-icon {
+  font-size: 1.2rem;
+}
+
+.module-tag {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.65rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 2px 6px;
+  border-radius: 0px;
+  text-transform: uppercase;
+}
+
+.badge-red { color: #ff007f; border-color: rgba(255, 0, 127, 0.4); }
+.badge-orange { color: #00f0ff; border-color: rgba(0, 240, 255, 0.4); }
+.badge-gray { color: #a855f7; border-color: rgba(168, 85, 247, 0.4); }
+
+.module-title {
+  font-family: var(--font-heading, 'Syne', sans-serif);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 14px;
+}
+
+.module-bullets {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.module-bullets li {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  position: relative;
+  padding-left: 16px;
+  line-height: 1.4;
+}
+
+.module-bullets li::before {
+  content: '▪';
+  position: absolute;
+  left: 0;
+  color: #00f0ff;
+  font-size: 0.8rem;
+}
+
+/* ------------------------------------
+   Mobile Scroll Neon Glow Animation State
+   ------------------------------------ */
+@media (max-width: 768px) {
+  .flow-card.in-view,
+  .module-card.in-view {
+    transform: translate(-4px, -4px) !important;
+    border-color: #00f0ff !important;
+    box-shadow: 5px 5px 0px 0px #ffffff,
+                10px 10px 0px 0px #a855f7,
+                0 0 30px rgba(0, 240, 255, 0.75),
+                0 0 60px rgba(168, 85, 247, 0.35) !important;
+  }
+}
+
+/* Responsiveness */
+@media (max-width: 900px) {
+  .roadmap-timeline-flow {
+    flex-direction: column;
+  }
+  .modules-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .roadmap-title {
+    font-size: 1.3rem;
+  }
+}

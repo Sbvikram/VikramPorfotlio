@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vikram | The Reels Archive</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Three.js CDN for WebGL 3D Carousel Rendering -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body.reels-body {
+      background-color: #000000;
+      color: #f0f0f0;
+      overflow-x: hidden;
+      margin: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+    }
+
+    /* Fixed Top Navbar */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      background: rgba(12, 12, 12, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid #262626;
+      padding: 16px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .hamburger-menu {
+      display: none;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 28px;
+      height: 20px;
+      cursor: pointer;
+      z-index: 10001;
+    }
+
+    .hamburger-menu span {
+      display: block;
+      width: 100%;
+      height: 2px;
+      background-color: #f0f0f0;
+      transition: all 0.3s ease-in-out;
+    }
+
+    /* Hamburger Active X Transformation */
+    .hamburger-menu.active span:nth-child(1) {
+      transform: translateY(9px) rotate(45deg);
+    }
+    .hamburger-menu.active span:nth-child(2) {
+      opacity: 0;
+    }
+    .hamburger-menu.active span:nth-child(3) {
+      transform: translateY(-9px) rotate(-45deg);
+    }
+
+    /* Main Container */
+    .main-container {
+      position: relative;
+      z-index: 10;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 110px 40px 40px 40px;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .room-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 15px;
+    }
+
+    .room-meta {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: #94a3b8;
+    }
+
+    .meta-num {
+      color: var(--signal, #ff5500);
+      font-weight: 700;
+    }
+
+    .room-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #fff;
+      margin-top: 4px;
+    }
+
+    /* Category Filter Tabs */
+    .filter-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .tab-btn {
+      padding: 8px 16px;
+      border-radius: 6px;
+      background: #080808;
+      border: 1px solid #262626;
+      color: #94a3b8;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .tab-btn:hover {
+      background: #111;
+      border-color: #444;
+      color: #fff;
+    }
+
+    .tab-btn.active-tab {
+      background: rgba(255, 0, 127, 0.15);
+      border-color: #ff007f;
+      color: #fff;
+      font-weight: 700;
+      box-shadow: 0 0 15px rgba(255, 0, 127, 0.3);
+    }
+
+    .pagination-controls {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: #fff;
+    }
+
+    .page-nav-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      background: #080808;
+      border: 1px solid #262626;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .page-nav-btn:hover {
+      background: #111;
+      border-color: #ff007f;
+    }
+
+    /* 3D Canvas Viewport Wrapper */
+    .canvas-viewport-wrapper {
+      position: relative;
+      width: 100%;
+      height: 480px;
+      margin-top: 30px;
+      border-radius: 16px;
+      overflow: hidden;
+      background: radial-gradient(circle at center, rgba(30, 10, 35, 0.4) 0%, rgba(0,0,0,0.8) 80%);
+      border: 1px solid rgba(255, 0, 127, 0.15);
+    }
+
+    #webgl-canvas-container {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Central Movie Detail Overlay Card */
+    .central-detail-panel {
+      position: relative;
+      margin-top: 25px;
+      width: 100%;
+      background: rgba(10, 10, 10, 0.95);
+      border: 1.5px solid #ff007f;
+      border-radius: 14px;
+      padding: 24px 32px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.9), 0 0 35px rgba(255, 0, 127, 0.25);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .panel-movie-info {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-width: 75%;
+    }
+
+    .panel-title-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: #94a3b8;
+    }
+
+    .panel-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .panel-desc {
+      font-size: 0.9rem;
+      color: #94a3b8;
+      line-height: 1.4;
+    }
+
+    .shelf-tag {
+      padding: 3px 10px;
+      border-radius: 4px;
+      background: rgba(255, 0, 127, 0.15);
+      border: 1px solid #ff007f;
+      color: #ff007f;
+      text-transform: uppercase;
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+
+    .imdb-btn {
+      padding: 14px 26px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #ff007f 0%, #7c3aed 100%);
+      color: #fff;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 0.85rem;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 0 20px rgba(255, 0, 127, 0.4);
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+
+    .imdb-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 30px rgba(255, 0, 127, 0.7);
+    }
+
+    /* Mobile Responsive Navigation Drawer */
+    @media (max-width: 768px) {
+      .hamburger-menu {
+        display: flex;
+      }
+      .navbar .nav-links {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 100%;
+        height: 100vh;
+        min-height: 100dvh;
+        background: rgba(12, 12, 12, 0.98);
+        backdrop-filter: blur(10px);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 32px;
+        transition: right 0.4s cubic-bezier(0.77, 0, 0.175, 1);
+        z-index: 9999;
+        border-left: 1px solid #262626;
+      }
+      .navbar .nav-links.nav-active {
+        right: 0;
+      }
+      .room-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+      .canvas-viewport-wrapper {
+        height: 360px;
+      }
+      .central-detail-panel {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+      .panel-movie-info {
+        max-width: 100%;
+      }
+    }
+    @media (max-width: 768px) {
+  .room-title {
+    font-weight: 500;
+  }
+}
+  </style>
+</head>
+<body class="reels-body">
+
+  <!-- Header / Navbar -->
+  <header class="navbar">
+    <div class="logo">
+      <span class="logo-box">V</span>
+      <span class="logo-text">VIKRAM.EXE</span>
+    </div>
+
+    <div class="hamburger-menu" id="hamburgerMenu" aria-label="Toggle Navigation">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+
+    <nav class="nav-links" id="navLinks">
+     <a href="index.html#about">Start</a>
+        <a href="index.html#work">Work</a>
+        <a href="projects.html">Projects</a>
+          <a href="erp-roadmap.html">Skills</a>
+        <a href="contact.html">Contact</a>
+    </nav>
+    <a href="index.html" class="btn btn-secondary" style="font-size: 0.75rem; padding: 8px 16px;">&larr; BACK TO HOME</a>
+    <div class="shortcut-badge">Jump ⌘K</div>
+  </header>
+
+  <!-- Reels Room Main Container -->
+  <main class="main-container">
+    
+    <div class="room-header">
+      <div class="header-left">
+        <div class="room-meta"><span class="meta-num">#02.</span> THE REELS ARCHIVE</div>
+        <h1 class="room-title">Cinematic Masterpieces</h1>
+        
+        <!-- Category Filter Tabs -->
+        <div class="filter-tabs" id="filterTabs">
+          <button class="tab-btn active-tab" data-index="0">ALL (10)</button>
+          <button class="tab-btn" data-index="1">DRAMA & HOPE</button>
+          <button class="tab-btn" data-index="2">SURVIVAL & FAITH</button>
+          <button class="tab-btn" data-index="3">SCI-FI & MIND</button>
+        </div>
+      </div>
+
+      <div class="pagination-controls">
+        <span id="pageTracker">1 of 10</span>
+        <button class="page-nav-btn" id="prevMovie" aria-label="Previous Movie">&larr;</button>
+        <button class="page-nav-btn" id="nextMovie" aria-label="Next Movie">&rarr;</button>
+      </div>
+    </div>
+
+    <!-- 3D Canvas Viewport -->
+    <div class="canvas-viewport-wrapper">
+      <div id="webgl-canvas-container"></div>
+    </div>
+
+    <!-- Central Movie Detail Overlay Card -->
+    <div class="central-detail-panel" id="centralDetailPanel">
+      <div class="panel-movie-info">
+        <div class="panel-title-row">
+          <span id="focusMovieHero">Tim Robbins</span>
+          <span>•</span>
+          <span id="focusMovieYear">1994</span>
+          <span class="shelf-tag" id="focusMovieShelf">DRAMA & HOPE</span>
+        </div>
+        <h3 class="panel-title" id="focusMovieTitle">The Shawshank Redemption</h3>
+        <p class="panel-desc" id="focusMovieDesc">Over the course of several years, two convicts form a friendship, seeking consolation and, eventually, redemption through basic compassion.</p>
+      </div>
+      <a href="https://www.imdb.com/title/tt0111161/" target="_blank" rel="noopener noreferrer" class="imdb-btn" id="imdbLink">
+        <span>IMDb ↗</span>
+      </a>
+    </div>
+
+  </main>
+
+  <!-- Three.js 3D Movie Carousel Engine -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+      const moviesData = [
+        {
+          title: "The Shawshank Redemption",
+          hero: "Tim Robbins & Morgan Freeman",
+          year: "1994",
+          shelf: "DRAMA & HOPE",
+          desc: "Over the course of several years, two convicts form a friendship, seeking consolation and, eventually, redemption through basic compassion.",
+          imdbUrl: "https://www.imdb.com/title/tt0111161/",
+          tagline: "FEAR CAN HOLD YOU PRISONER. HOPE CAN SET YOU FREE.",
+          primaryColor: "#0284c7",
+          secondaryColor: "#0f172a"
+        },
+        {
+          title: "Life of Pi",
+          hero: "Suraj Sharma",
+          year: "2012",
+          shelf: "SURVIVAL & FAITH",
+          desc: "After a cataclysmic shipwreck, young Pi Patel finds himself stranded on a lifeboat with a ferocious Bengal tiger, sparking an epic journey of faith.",
+          imdbUrl: "https://www.imdb.com/title/tt0454876/",
+          tagline: "BELIEVE THE UNBELIEVABLE.",
+          primaryColor: "#f59e0b",
+          secondaryColor: "#042f2e"
+        },
+        {
+          title: "Interstellar",
+          hero: "Matthew McConaughey",
+          year: "2014",
+          shelf: "SCI-FI & MIND",
+          desc: "A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival across interstellar distances.",
+          imdbUrl: "https://www.imdb.com/title/tt0816692/",
+          tagline: "MANKIND WAS BORN ON EARTH. IT WAS NEVER MEANT TO DIE HERE.",
+          primaryColor: "#38bdf8",
+          secondaryColor: "#020617"
+        },
+        {
+          title: "The Pursuit of Happyness",
+          hero: "Will Smith",
+          year: "2006",
+          shelf: "DRAMA & HOPE",
+          desc: "A struggling salesman takes custody of his son as he's poised to begin a life-changing professional career against daunting odds.",
+          imdbUrl: "https://www.imdb.com/title/tt0454921/",
+          tagline: "BASED ON A TRUE STORY OF PERSEVERANCE.",
+          primaryColor: "#ec4899",
+          secondaryColor: "#500724"
+        },
+        {
+          title: "Blade Runner 2049",
+          hero: "Ryan Gosling",
+          year: "2017",
+          shelf: "SCI-FI & MIND",
+          desc: "Officer K unearthing a long-buried secret that threatens what remains of human and replicant society.",
+          imdbUrl: "https://www.imdb.com/title/tt1856101/",
+          tagline: "THERE IS STILL A PAGE LEFT.",
+          primaryColor: "#f97316",
+          secondaryColor: "#1c1917"
+        },
+        {
+          title: "3 Idiots",
+          hero: "Aamir Khan",
+          year: "2009",
+          shelf: "DRAMA & HOPE",
+          desc: "Two friends search for their long lost companion. They revisit their college days and remember the memories of their friend who inspired them.",
+          imdbUrl: "https://www.imdb.com/title/tt1187043/",
+          tagline: "ALL IS WELL.",
+          primaryColor: "#10b981",
+          secondaryColor: "#064e3b"
+        },
+        {
+          title: "Schindler's List",
+          hero: "Liam Neeson",
+          year: "1993",
+          shelf: "SURVIVAL & FAITH",
+          desc: "In German-occupied Poland during World War II, industrialist Oskar Schindler gradually becomes concerned for his Jewish workforce.",
+          imdbUrl: "https://www.imdb.com/title/tt0108052/",
+          tagline: "WHOEVER SAVES ONE LIFE, SAVES THE WORLD ENTIRE.",
+          primaryColor: "#e2e8f0",
+          secondaryColor: "#18181b"
+        },
+        {
+          title: "Good Will Hunting",
+          hero: "Robin Williams & Matt Damon",
+          year: "1997",
+          shelf: "DRAMA & HOPE",
+          desc: "Will Hunting, a janitor at M.I.T., has a gift for mathematics, but needs help from a psychologist to find direction in his life.",
+          imdbUrl: "https://www.imdb.com/title/tt0119217/",
+          tagline: "SOME PEOPLE CAN NEVER BELIEVE IN THEMSELVES UNTIL SOMEONE ELSE BELIEVES IN THEM.",
+          primaryColor: "#06b6d4",
+          secondaryColor: "#082f49"
+        },
+        {
+          title: "Sound of Metal",
+          hero: "Riz Ahmed",
+          year: "2019",
+          shelf: "SURVIVAL & FAITH",
+          desc: "A heavy-metal drummer's life is thrown into tailspin when he begins to lose his hearing.",
+          imdbUrl: "https://www.imdb.com/title/tt7503644/",
+          tagline: "LISTEN TO THE SILENCE.",
+          primaryColor: "#a855f7",
+          secondaryColor: "#3b0764"
+        },
+        {
+          title: "Inception",
+          hero: "Leonardo DiCaprio",
+          year: "2010",
+          shelf: "SCI-FI & MIND",
+          desc: "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea.",
+          imdbUrl: "https://www.imdb.com/title/tt1375666/",
+          tagline: "YOUR MIND IS THE SCENE OF THE CRIME.",
+          primaryColor: "#3b82f6",
+          secondaryColor: "#1e3a8a"
+        }
+      ];
+
+      const container = document.getElementById('webgl-canvas-container');
+      const width = container.clientWidth;
+      const height = container.clientHeight;
+
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x000000);
+
+      const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+      camera.position.set(0, 0, 520);
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(window.devicePixelRatio);
+      container.appendChild(renderer.domElement);
+
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
+      scene.add(ambientLight);
+
+      const spotLight = new THREE.PointLight(0xffffff, 2.2, 800);
+      spotLight.position.set(120, 220, 350);
+      scene.add(spotLight);
+
+      const neonLight = new THREE.PointLight(0xff007f, 1.4, 800);
+      neonLight.position.set(-120, -150, 300);
+      scene.add(neonLight);
+
+      function createTheatricalPosterTexture(movie) {
+        const canvas = document.createElement('canvas');
+        canvas.width = 512;
+        canvas.height = 768;
+        const ctx = canvas.getContext('2d');
+
+        let grad = ctx.createLinearGradient(0, 0, 512, 768);
+        grad.addColorStop(0, movie.primaryColor);
+        grad.addColorStop(0.6, movie.secondaryColor);
+        grad.addColorStop(1, '#000000');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, 512, 768);
+
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 6;
+        ctx.strokeRect(20, 20, 472, 728);
+
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.55)';
+        ctx.fillRect(44, 44, 424, 430);
+
+        ctx.fillStyle = movie.primaryColor;
+        ctx.font = 'bold 22px "JetBrains Mono", monospace';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(`★ OFFICIAL RELEASE ★`, 256, 120);
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 30px "Syne", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(movie.title.toUpperCase(), 256, 220);
+
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+        ctx.font = '14px "JetBrains Mono", monospace';
+        ctx.fillText(movie.tagline, 256, 290, 380);
+
+        const bottomGrad = ctx.createLinearGradient(0, 474, 0, 768);
+        bottomGrad.addColorStop(0, 'transparent');
+        bottomGrad.addColorStop(0.2, 'rgba(0, 0, 0, 0.9)');
+        bottomGrad.addColorStop(1, '#000000');
+        ctx.fillStyle = bottomGrad;
+        ctx.fillRect(0, 474, 512, 294);
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 34px "Syne", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        ctx.fillText(movie.title, 256, 520, 440);
+
+        ctx.fillStyle = movie.primaryColor;
+        ctx.font = 'bold 16px "JetBrains Mono", monospace';
+        ctx.fillText(`${movie.hero.toUpperCase()} • ${movie.year}`, 256, 610, 440);
+
+        return new THREE.CanvasTexture(canvas);
+      }
+
+      const movieMeshes = [];
+      const moviesGroup = new THREE.Group();
+
+      moviesData.forEach((movie) => {
+        const posterW = 135;
+        const posterH = 200;
+        const posterD = 16;
+
+        const geometry = new THREE.BoxGeometry(posterW, posterH, posterD);
+        
+        const posterTex = createTheatricalPosterTexture(movie);
+        const posterMat = new THREE.MeshPhongMaterial({ map: posterTex });
+        const edgeMat = new THREE.MeshPhongMaterial({ color: 0x111111 });
+
+        const materials = [edgeMat, edgeMat, edgeMat, edgeMat, posterMat, posterMat];
+        const poster = new THREE.Mesh(geometry, materials);
+
+        const wireGeo = new THREE.BoxGeometry(posterW + 2, posterH + 2, posterD + 2);
+        const wireMat = new THREE.MeshBasicMaterial({ color: 0xff007f, wireframe: true, transparent: true, opacity: 0.28 });
+        poster.add(new THREE.Mesh(wireGeo, wireMat));
+
+        moviesGroup.add(poster);
+        movieMeshes.push(poster);
+      });
+
+      scene.add(moviesGroup);
+
+      let currentIndex = 0;
+      const tracker = document.getElementById('pageTracker');
+      const focusTitle = document.getElementById('focusMovieTitle');
+      const focusHero = document.getElementById('focusMovieHero');
+      const focusYear = document.getElementById('focusMovieYear');
+      const focusShelf = document.getElementById('focusMovieShelf');
+      const focusDesc = document.getElementById('focusMovieDesc');
+      const imdbLink = document.getElementById('imdbLink');
+      const tabButtons = document.querySelectorAll('.tab-btn');
+
+      function updateCarousel() {
+        movieMeshes.forEach((poster, i) => {
+          const offset = i - currentIndex;
+          const x = offset * 180;
+          const z = 160 * Math.pow(0.5, Math.abs(offset));
+          const rotY = -offset * 0.42;
+
+          poster.position.lerp(new THREE.Vector3(x, 0, z), 0.15);
+          poster.rotation.y = rotY;
+
+          const scale = i === currentIndex ? 1.12 : 0.82;
+          poster.scale.lerp(new THREE.Vector3(scale, scale, scale), 0.15);
+        });
+
+        const active = moviesData[currentIndex];
+        tracker.textContent = `${currentIndex + 1} of ${moviesData.length}`;
+        focusTitle.textContent = active.title;
+        focusHero.textContent = active.hero;
+        focusYear.textContent = active.year;
+        focusShelf.textContent = active.shelf;
+        focusDesc.textContent = active.desc;
+        imdbLink.href = active.imdbUrl;
+
+        tabButtons.forEach((btn, idx) => {
+          btn.classList.toggle('active-tab', idx === currentIndex);
+        });
+      }
+
+      function setIndex(index) {
+        currentIndex = index;
+        updateCarousel();
+      }
+
+      document.getElementById('prevMovie').addEventListener('click', () => {
+        currentIndex = (currentIndex - 1 + moviesData.length) % moviesData.length;
+        updateCarousel();
+      });
+
+      document.getElementById('nextMovie').addEventListener('click', () => {
+        currentIndex = (currentIndex + 1) % moviesData.length;
+        updateCarousel();
+      });
+
+      tabButtons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const idx = parseInt(btn.getAttribute('data-index'));
+          if (!isNaN(idx) && idx < moviesData.length) {
+            setIndex(idx);
+          }
+        });
+      });
+
+      window.addEventListener('resize', () => {
+        const w = container.clientWidth;
+        const h = container.clientHeight;
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+        renderer.setSize(w, h);
+      });
+
+      function animate() {
+        requestAnimationFrame(animate);
+        renderer.render(scene, camera);
+      }
+
+      updateCarousel();
+      animate();
+    });
+  </script>
+
+  <!-- Global Navigation Script -->
+  <script src="js/main.js"></script>
+</body>
+</html>

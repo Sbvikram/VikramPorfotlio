@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vikram | Techno-Functional ERP Portfolio</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="archive/archive.css">
+  <link rel="stylesheet" href="archive/work.css">
+  <link rel="stylesheet" href="css/timeline.css">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* --- Fix Preloader Centering on Mobile Viewports --- */
+    #preloader {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: #030208;
+      z-index: 99999;
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+    }
+
+    #preloader .loader-content {
+      width: 100%;
+      max-width: 400px;
+      padding: 0 24px;
+      margin: 0 auto;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #preloader.fade-out {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    /* --- Custom Sharp Edges & Purple Neon Glow for Archive Cards (Reading, Listening, Screening) --- */
+    .cards-grid.archive-grid .card,
+    .archive-card {
+      border-radius: 0px !important;
+      border: 1px solid #262626 !important;
+      background: var(--card-bg, #161616);
+      transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), 
+                  box-shadow 0.2s cubic-bezier(0.25, 1, 0.5, 1), 
+                  border-color 0.2s ease;
+      position: relative;
+      will-change: transform, box-shadow;
+    }
+
+    .cards-grid.archive-grid .card:hover,
+    .archive-card:hover {
+      transform: translate(-4px, -4px) !important;
+      border-color: #ff007f !important;
+      box-shadow: 5px 5px 0px 0px #ffffff,
+                  10px 10px 0px 0px #a855f7,
+                  0 0 30px rgba(168, 85, 247, 0.75),
+                  0 0 60px rgba(255, 0, 127, 0.35) !important;
+    }
+
+    /* --- Custom Sharp Edges & Purple Neon Glow / 3D Hover Effect for Employment Timeline Cards --- */
+    .timeline-accordion-card {
+      border-radius: 0px !important; /* Sharp straight edges */
+      border: 1px solid #ff007f !important; /* Permanent Electric Purple/Pink Neon Border */
+      box-shadow: 0 0 15px rgba(255, 0, 127, 0.25) !important;
+      transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), 
+                  box-shadow 0.2s cubic-bezier(0.25, 1, 0.5, 1), 
+                  border-color 0.2s ease;
+      will-change: transform, box-shadow;
+      position: relative;
+    }
+
+    .timeline-accordion-card.active-orange-border {
+      border-color: #ff007f !important;
+    }
+
+    /* Multi-Layered 3D Purple Neon Hover Effect on Timeline Cards */
+    .timeline-accordion-card:hover {
+      transform: translate(-4px, -4px) !important;
+      border-color: #ff007f !important;
+      box-shadow: 5px 5px 0px 0px #ffffff,
+                  10px 10px 0px 0px #a855f7,
+                  0 0 30px rgba(168, 85, 247, 0.75),
+                  0 0 60px rgba(255, 0, 127, 0.35) !important;
+    }
+
+    /* --- Sharp Edges (No Border Radius) & Thin Borders for Work Cards --- */
+    .cards-grid.work-grid .work-card,
+    .work-card {
+      border-radius: 0px !important;
+      border: 1px solid var(--border-color, #262626) !important;
+      background: var(--card-bg, #161616);
+      transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), 
+                  box-shadow 0.2s cubic-bezier(0.25, 1, 0.5, 1), 
+                  border-color 0.2s ease;
+      position: relative;
+      will-change: transform, box-shadow;
+    }
+
+    .cards-grid.work-grid .work-card:hover,
+    .work-card:hover {
+      transform: translate(-4px, -4px) !important;
+      border-color: #ff5500 !important;
+      box-shadow: 5px 5px 0px 0px #ffffff,
+                  10px 10px 0px 0px #ff5500,
+                  0 0 30px rgba(255, 85, 0, 0.75),
+                  0 0 60px rgba(255, 85, 0, 0.35) !important;
+    }
+
+    /* Metric tags hover tinting */
+    .metric-box {
+      border-radius: 0px !important;
+      transition: border-color 0.3s ease, background 0.3s ease;
+    }
+    .work-card:hover .metric-box {
+      border-color: rgba(255, 85, 0, 0.5);
+      background: rgba(255, 85, 0, 0.08);
+    }
+
+    /* --- Multi-Layered 3D Purple Neon Hover Effect for Tech Badges Inside Timeline Accordion --- */
+    .timeline-accordion-card .work-tags-container .bordered-tag {
+      border-radius: 0px !important;
+      border: 1px solid #262626 !important;
+      background: #111111 !important;
+      color: #94a3b8 !important;
+      padding: 6px 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      display: inline-block;
+      transition: transform 0.15s cubic-bezier(0.25, 1, 0.5, 1), 
+                  box-shadow 0.15s cubic-bezier(0.25, 1, 0.5, 1), 
+                  border-color 0.15s ease, 
+                  color 0.15s ease, 
+                  background-color 0.15s ease;
+      cursor: pointer;
+    }
+
+    .timeline-accordion-card .work-tags-container .bordered-tag:hover {
+      transform: translate(-2px, -2px) !important;
+      background-color: #a855f7 !important; /* Electric Purple */
+      color: #000000 !important;
+      border-color: #ff007f !important; /* Electric Pink */
+      font-weight: 700 !important;
+      box-shadow: 3px 3px 0px 0px #ffffff,
+                  6px 6px 0px 0px #a855f7,
+                  0 0 15px rgba(168, 85, 247, 0.8) !important;
+    }
+
+    /* Standard work tags hover styling */
+    .work-tags span {
+      border-radius: 0px !important;
+      border: 1px solid #262626 !important;
+      background: #111111 !important;
+      color: #94a3b8 !important;
+      padding: 6px 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      display: inline-block;
+      transition: transform 0.15s cubic-bezier(0.25, 1, 0.5, 1), 
+                  box-shadow 0.15s cubic-bezier(0.25, 1, 0.5, 1), 
+                  border-color 0.15s ease, 
+                  color 0.15s ease, 
+                  background-color 0.15s ease;
+      cursor: pointer;
+    }
+
+    .work-tags span:hover {
+      transform: translate(-2px, -2px) !important;
+      background-color: #ff5500 !important;
+      color: #000000 !important;
+      border-color: #ff5500 !important;
+      font-weight: 700 !important;
+      box-shadow: 3px 3px 0px 0px #ffffff,
+                  6px 6px 0px 0px #ff5500,
+                  0 0 15px rgba(255, 85, 0, 0.8) !important;
+    }
+
+    /* Link card styling wrappers */
+    a.card-link-wrapper {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    /* --- Profile Image Frame Neon Glow Effect --- */
+    .image-frame-container {
+      border-radius: 0px !important;
+      border: 2px solid #ff007f !important;
+      box-shadow: 0 0 20px rgba(255, 0, 127, 0.35), 
+                  6px 6px 0px rgba(255, 85, 0, 0.2) !important;
+      transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    .image-frame-container:hover {
+      border-color: #ff007f !important;
+      box-shadow: 0 0 40px rgba(255, 0, 127, 0.75), 
+                  0 0 80px rgba(168, 85, 247, 0.4),
+                  8px 8px 0px rgba(255, 0, 127, 0.4) !important;
+      transform: translateY(-4px);
+    }
+
+    /* --- Default Electric Neon Text Glow for Hero Elements --- */
+    .hero-title {
+      color: #ffffff !important;
+      text-shadow: 0 0 10px rgba(255, 0, 127, 0.7),
+                   0 0 20px rgba(255, 0, 127, 0.5),
+                   0 0 35px rgba(255, 0, 127, 0.3);
+      transition: text-shadow 0.3s ease;
+    }
+
+    .quote-card p {
+      color: #ffffff !important;
+      text-shadow: 0 0 8px rgba(255, 0, 127, 0.5),
+                   0 0 15px rgba(255, 0, 127, 0.3);
+      transition: text-shadow 0.3s ease;
+    }
+
+    .hero-description {
+      color: #f0f0f0 !important;
+      text-shadow: 0 0 6px rgba(255, 0, 127, 0.45),
+                   0 0 12px rgba(255, 0, 127, 0.25);
+      transition: text-shadow 0.3s ease;
+    }
+
+    .hero-title:hover, .quote-card p:hover, .hero-description:hover {
+      text-shadow: 0 0 15px rgba(255, 0, 127, 0.9),
+                   0 0 30px rgba(255, 0, 127, 0.7),
+                   0 0 45px rgba(255, 0, 127, 0.5);
+    }
+
+    /* --- Unified High-Intensity Cyberpunk Orange Neon Hover for ALL Buttons --- */
+    .btn, a.btn {
+      border-radius: 0px !important;
+      transition: transform 0.15s cubic-bezier(0.25, 1, 0.5, 1), 
+                  box-shadow 0.15s cubic-bezier(0.25, 1, 0.5, 1), 
+                  background-color 0.15s ease, 
+                  color 0.15s ease;
+    }
+
+    .btn:hover, a.btn:hover {
+      background-color: #ff5500 !important;
+      color: #000000 !important;
+      border-color: #ff5500 !important;
+      transform: translate(-3px, -3px);
+      box-shadow: 4px 4px 0px 0px #ffffff,
+                  8px 8px 0px 0px #ff5500,
+                  0 0 25px rgba(255, 85, 0, 0.85),
+                  0 0 50px rgba(255, 85, 0, 0.45) !important;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Animated Preloader Screen -->
+  <div id="preloader">
+    <div class="loader-content">
+      <div class="loader-badge">SYSTEM LOADING</div>
+      <div class="loader-text">
+        <span class="typing-text">Vikram portfolio is loading</span><span class="cursor">_</span>
+      </div>
+      <div class="progress-bar-container">
+        <div class="progress-bar" id="progress-bar"></div>
+      </div>
+      <div class="percentage" id="percentage">0%</div>
+    </div>
+  </div>
+
+  <!-- Main Website Content -->
+  <div id="main-content">
+    <!-- Header / Navbar -->
+    <header class="navbar">
+      <div class="logo">
+        <span class="logo-box">V</span>
+        <span class="logo-text">VIKRAM.EXE</span>
+      </div>
+      
+      <!-- Hamburger Toggle Button -->
+      <div class="hamburger-menu" id="hamburgerMenu" aria-label="Toggle Navigation">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+
+      <nav class="nav-links" id="navLinks">
+        <a href="index.html#about">Start</a>
+        <a href="index.html#work">Work</a>
+        <a href="projects.html">Projects</a>
+        <a href="erp-roadmap.html">Skills</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+      <div class="shortcut-badge">Jump ⌘K</div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="about" class="hero">
+      <div class="hero-left">
+        <h1 class="hero-title">Vikram</h1>
+        
+        <!-- Animated Typewriter Subtitle -->
+        <p class="hero-subtitle">
+          <span id="typed-text">ERP Implementation Specialist & Techno-Functional Consultant</span><span class="cursor">|</span>
+        </p>
+        
+        <div class="quote-card">
+          <p>"I build robust enterprise solutions, streamline business workflows, and connect systems that scale."</p>
+        </div>
+
+        <p class="hero-description">
+          With nearly 5+ years of experience, specializing in Microsoft Dynamics 365 Business Central, Sage Intacct, PairSoft PaperSave, SQL, and enterprise cloud integrations. Focused on driving AP automation, financial ledger precision, and secure IAM deployments.
+        </p>
+
+        <div class="cta-buttons">
+          <a href="#work" class="btn btn-primary">EXPLORE MY WORK &rarr;</a>
+          <!-- Local Assets Folder Resume Download Route -->
+          <a href="assets/VikramBoopathy_Resume.pdf" class="btn btn-secondary" download="Vikram_Boopathy_Resume.pdf">DOWNLOAD RÉSUMÉ (PDF)</a>
+        </div>
+      </div>
+
+      <!-- Framed Profile Image Section -->
+      <div class="hero-right">
+        <div class="image-frame-container">
+          <div class="image-frame-inner">
+            <img src="images/vikram.jpg" alt="Vikram" class="profile-img active">
+            <img src="images/Vikram1.png" alt="Vikram" class="profile-img">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Selected Work / Projects Section -->
+    <section id="work" class="section work-section">
+      <div class="section-header-flex">
+        <div>
+          <div class="section-tag">01 / SELECTED WORK & DEPLOYMENTS</div>
+          <h2 class="section-title">Enterprise ERP & Cloud Builds</h2>
+          <p style="color: var(--text-muted); max-width: 580px; font-size: 1.05rem;">
+            High-impact cloud ERP implementations, finance workflow automations, and identity integrations across global enterprises.
+          </p>
+        </div>
+        <a href="#timeline" class="btn btn-secondary" style="font-size: 0.8rem; padding: 12px 20px;">VIEW TIMELINE &rarr;</a>
+      </div>
+
+      <div class="cards-grid work-grid">
+        
+        <!-- Card 1: PairSoft -->
+        <div class="card work-card animate-on-scroll">
+          <div class="card-top-info">
+            <span class="card-quest-tag">ACTIVE ROLE · 5+ YRS EXP</span>
+            <span class="card-date">Dec 2025 – Present</span>
+          </div>
+          
+          <h3 class="work-card-title">PairSoft Technologies</h3>
+          <p class="work-role">Technical Functional Consultant – Dynamics & Cloud ERP</p>
+          
+          <p class="work-desc">
+            Delivering end-to-end technical-functional consulting, PaperSave document management, OCR invoice capture, and automated procure-to-pay workflows across Dynamics 365 Business Central, Dynamics GP, Sage Intacct, and Blackbaud.
+          </p>
+
+          <div class="metrics-row">
+            <div class="metric-box">
+              <h4>100%</h4>
+              <p>AP Automation</p>
+            </div>
+            <div class="metric-box">
+              <h4>D365 & Sage</h4>
+              <p>Core ERP Suites</p>
+            </div>
+            <div class="metric-box">
+              <h4>Azure / Okta</h4>
+              <p>IAM / SSO Setup</p>
+            </div>
+          </div>
+
+          <div class="work-tags">
+            <span>Business Central</span>
+            <span>Sage Intacct</span>
+            <span>PaperSave AP</span>
+            <span>SQL & Web APIs</span>
+            <span>Azure Entra ID</span>
+          </div>
+        </div>
+
+        <!-- Card 2: Proveway -->
+        <div class="card work-card animate-on-scroll">
+          <div class="card-top-info">
+            <span class="card-quest-tag">ENTERPRISE DEPLOYMENTS</span>
+            <span class="card-date">Nov 2024 – Dec 2025</span>
+          </div>
+          
+          <h3 class="work-card-title">Proveway</h3>
+          <p class="work-role">ERP Technical Consultant & Automation Engineer</p>
+          
+          <p class="work-desc">
+            Engineered Shopify-to-Sage Intacct order and payment settlement synchronizations, optimized complex SQL database scripts, and deployed secure SAML/SSO authentication pipelines on Azure virtual machines.
+          </p>
+
+          <div class="metrics-row">
+            <div class="metric-box">
+              <h4>Shopify-Intacct</h4>
+              <p>Sync Engine</p>
+            </div>
+            <div class="metric-box">
+              <h4>SAML / SSO</h4>
+              <p>Secure Access</p>
+            </div>
+            <div class="metric-box">
+              <h4>SQL / JS</h4>
+              <p>Custom Scripting</p>
+            </div>
+          </div>
+
+          <div class="work-tags">
+            <span>Sage Intacct</span>
+            <span>Dynamics GP</span>
+            <span>Shopify Sync</span>
+            <span>Azure VMs</span>
+            <span>SQL Database</span>
+          </div>
+        </div>
+
+        <!-- Card 3: Amazon AWS Support -->
+        <div class="card work-card animate-on-scroll">
+          <div class="card-top-info">
+            <span class="card-quest-tag">CLOUD INFRASTRUCTURE</span>
+            <span class="card-date">Aug 2018 – Sep 2021</span>
+          </div>
+          
+          <h3 class="work-card-title">Amazon (AWS Support)</h3>
+          <p class="work-role">Senior Technical Support Engineer</p>
+          
+          <p class="work-desc">
+            Provided high-tier technical consulting for EC2, S3, and IAM infrastructure, resolving 500+ complex B2B enterprise client incidents with a 98% CSAT rating.
+          </p>
+
+          <div class="metrics-row">
+            <div class="metric-box">
+              <h4>500+</h4>
+              <p>Incidents Resolved</p>
+            </div>
+            <div class="metric-box">
+              <h4>98%</h4>
+              <p>CSAT Rating</p>
+            </div>
+            <div class="metric-box">
+              <h4>AWS EC2 / S3</h4>
+              <p>Cloud Architecture</p>
+            </div>
+          </div>
+
+          <div class="work-tags">
+            <span>AWS EC2 & S3</span>
+            <span>IAM Security</span>
+            <span>Diagnostics</span>
+            <span>B2B Consulting</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Employment Timeline Section -->
+    <section id="timeline" class="section timeline-section">
+      <div class="section-header-flex">
+        <div>
+          <div class="section-tag">02 / CAREER TRAJECTORY</div>
+          <h2 class="section-title">Employment timeline</h2>
+          <p style="color: var(--text-muted); max-width: 580px; font-size: 1.05rem;">
+            Reverse-chronological progression across cloud ERP implementations, finance workflow automation, and enterprise platforms.
+          </p>
+        </div>
+        <!-- Local Assets Folder Resume Download Route -->
+        <a href="assets/Vikram_Resume.pdf" class="btn btn-secondary" style="font-size: 0.8rem; padding: 12px 20px;" download="Vikram_Boopathy_Resume.pdf">FULL RÉSUMÉ &rarr;</a>
+      </div>
+
+      <div class="timeline-container">
+        <!-- Vertical Axis Line -->
+        <div class="timeline-axis"></div>
+
+        <div class="timeline-cards-wrapper">
+          
+          <!-- Item 1: PairSoft -->
+          <div class="timeline-item">
+            <div class="timeline-square-marker active-marker"></div>
+            <div class="card timeline-accordion-card open active-orange-border">
+              
+              <div class="card-header-toggle">
+                <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                  <h3 class="work-card-title">PairSoft Technologies</h3>
+                  <span class="current-badge-solid">CURRENT</span>
+                </div>
+                <div class="date-and-toggle">
+                  <span class="card-date">Dec 2025 – Present</span>
+                  <span class="toggle-icon">[-]</span>
+                </div>
+              </div>
+              
+              <p class="work-role">Technical Functional Consultant – Microsoft Dynamics & Cloud ERP</p>
+              <p class="work-desc">
+                Delivering end-to-end technical-functional consulting, paperless document management, and invoice automation across Dynamics GP, Dynamics 365 Business Central, Sage Intacct, and Blackbaud.
+              </p>
+
+              <div class="accordion-body">
+                <div class="timeline-outcomes-header">KEY FUNCTIONAL DELIVERABLES & IMPACT</div>
+                <ul class="timeline-bullet-list">
+                  <li>Configuring core <strong>finance modules</strong> (General Ledger, AP, AR, Cash Management, and Bank Reconciliation).</li>
+                  <li>Designing and deploying advanced <strong>AP processing & PaperSave OCR automation</strong> workflows.</li>
+                  <li>Handling multi-entity <strong>company setups, chart of accounts</strong>, and distribution table configurations.</li>
+                  <li>Executing custom <strong>field customizations, database queries (SQL)</strong>, and script troubleshooting for automated procurement.</li>
+                  <li>Managing <strong>IAM / SSO configurations</strong> including Azure AD/Entra ID, SAML, Okta, and OneLogin federated access.</li>
+                </ul>
+
+                <div class="work-tags-container">
+                  <span class="bordered-tag">Business Central</span>
+                  <span class="bordered-tag">Sage Intacct</span>
+                  <span class="bordered-tag">PaperSave AP</span>
+                  <span class="bordered-tag">Bank Reconciliation</span>
+                  <span class="bordered-tag">Azure AD & Okta</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Item 2: Proveway -->
+          <div class="timeline-item">
+            <div class="timeline-square-marker"></div>
+            <div class="card timeline-accordion-card">
+              
+              <div class="card-header-toggle">
+                <h3 class="work-card-title">Proveway</h3>
+                <div class="date-and-toggle">
+                  <span class="card-date">Nov 2024 – Dec 2025</span>
+                  <span class="toggle-icon">[+]</span>
+                </div>
+              </div>
+              
+              <p class="work-role">ERP Technical Consultant & Automation Engineer</p>
+              <p class="work-desc">
+                Implemented Sage Intacct solutions and supported Dynamics GP finance operations, establishing automated integrations for high-growth e-commerce platforms.
+              </p>
+
+              <div class="accordion-body">
+                <div class="timeline-outcomes-header">KEY FUNCTIONAL DELIVERABLES & IMPACT</div>
+                <ul class="timeline-bullet-list">
+                  <li>Supported corporate accounting workflows including <strong>General Ledger, AP, AR</strong>, and vendor management.</li>
+                  <li>Built and maintained automated <strong>Shopify-to-Sage Intacct integrations</strong> for order and settlement reconciliation.</li>
+                  <li>Executed <strong>SQL database queries</strong> and custom JavaScript logic for seamless data extraction and mapping.</li>
+                  <li>Deployed secure Azure VM environments and SAML/SSO authentication boundaries.</li>
+                </ul>
+
+                <div class="work-tags-container">
+                  <span class="bordered-tag">Sage Intacct</span>
+                  <span class="bordered-tag">Dynamics GP</span>
+                  <span class="bordered-tag">Shopify Sync</span>
+                  <span class="bordered-tag">SQL & JavaScript</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Item 3: Amazon AWS Support -->
+          <div class="timeline-item">
+            <div class="timeline-square-marker"></div>
+            <div class="card timeline-accordion-card">
+              
+              <div class="card-header-toggle">
+                <h3 class="work-card-title">Amazon (AWS Support)</h3>
+                <div class="date-and-toggle">
+                  <span class="card-date">Aug 2018 – Sep 2021</span>
+                  <span class="toggle-icon">[+]</span>
+                </div>
+              </div>
+              
+              <p class="work-role">Senior Technical Support Engineer</p>
+              <p class="work-desc">
+                Provided high-tier technical infrastructure consulting and cloud system administration for enterprise global clients.
+              </p>
+
+              <div class="accordion-body">
+                <div class="timeline-outcomes-header">KEY TECHNICAL DELIVERABLES & IMPACT</div>
+                <ul class="timeline-bullet-list">
+                  <li>Resolved <strong>500+ complex technical incidents</strong> across AWS EC2, S3, and IAM architectures with a 98% CSAT.</li>
+                  <li>Analyzed server logs, deployment traces, and network configurations to drive rapid root-cause issue resolutions.</li>
+                </ul>
+
+                <div class="work-tags-container">
+                  <span class="bordered-tag">AWS EC2 & S3</span>
+                  <span class="bordered-tag">IAM & Security</span>
+                  <span class="bordered-tag">Server Diagnostics</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- The Archive Section -->
+    <section id="archive" class="section archive-section">
+      <div class="section-header-flex">
+        <div>
+          <div class="section-tag">03 / THE ARCHIVE</div>
+          <h2 class="section-title">Curiosities & culture</h2>
+          <p class="archive-intro">
+            A personal digital universe isn't just about work. It's also books, music, films, and ideas.
+          </p>
+        </div>
+      </div>
+
+      <div class="cards-grid archive-grid">
+        
+        <!-- Reading Room -->
+        <a href="reading.html" class="card-link-wrapper">
+          <div class="card archive-card">
+            <div class="card-top-row">
+              <span class="room-tag">READING ROOM</span>
+              <span class="room-icon">📖</span>
+            </div>
+            <p class="room-desc">Curated books on technology, design, philosophy, and thinking models.</p>
+            
+            <div class="media-preview-box">
+              <div class="book-cover-mock">
+                <span>The Myth of Sisyphus</span>
+              </div>
+            </div>
+
+            <span class="card-link" style="color: #ff007f; font-weight: 700; margin-top: 12px; display: inline-block;">BROWSE READS &rarr;</span>
+          </div>
+        </a>
+
+        <!-- Listening Room -->
+        <a href="listening-room.html" class="card-link-wrapper">
+          <div class="card archive-card">
+            <div class="card-top-row">
+              <span class="room-tag">LISTENING ROOM</span>
+              <span class="room-icon">🎵</span>
+            </div>
+            <p class="room-desc">Focused playlists, timeless albums, and ambient soundscapes.</p>
+            
+            <div class="media-preview-box">
+              <div class="album-cover-mock">
+                <span>🎵 Ambient Soundscape</span>
+              </div>
+            </div>
+
+            <span class="card-link" style="color: var(--signal, #ff5500); font-weight: 700; margin-top: 12px; display: inline-block;">TUNE IN ON SPOTIFY &rarr;</span>
+          </div>
+        </a>
+
+        <!-- Screening Room -->
+        <a href="reels.html" class="card-link-wrapper">
+          <div class="card archive-card">
+            <div class="card-top-row">
+              <span class="room-tag">SCREENING ROOM</span>
+              <span class="room-icon">🎬</span>
+            </div>
+            <p class="room-desc">Cinema that stays with you: thoughtful stories, cinematography, and commentary.</p>
+            
+            <div class="media-preview-box">
+              <div class="movie-cover-mock">
+                <span>Life Of Pi</span>
+              </div>
+            </div>
+
+            <span class="card-link" style="color: #a855f7; font-weight: 700; margin-top: 12px; display: inline-block;">EXPLORE REELS &rarr;</span>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact" class="footer">
+      <p>&copy; 2026 Vikram. Designed & Built with Custom CSS/JS.</p>
+    </footer>
+
+  </div>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

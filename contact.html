@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vikram | Contact</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body.contact-body {
+      background-color: #030208;
+      color: #ffffff;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* 3D Wave Particle Canvas Background */
+    #waveCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Navbar */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      background: rgba(12, 12, 12, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid #262626;
+      padding: 16px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .hamburger-menu {
+      display: none;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 28px;
+      height: 20px;
+      cursor: pointer;
+      z-index: 10001;
+    }
+
+    .hamburger-menu span {
+      display: block;
+      width: 100%;
+      height: 2px;
+      background-color: #f0f0f0;
+      transition: all 0.3s ease-in-out;
+    }
+
+    /* Hamburger Active X Transformation */
+    .hamburger-menu.active span:nth-child(1) {
+      transform: translateY(9px) rotate(45deg);
+    }
+    .hamburger-menu.active span:nth-child(2) {
+      opacity: 0;
+    }
+    .hamburger-menu.active span:nth-child(3) {
+      transform: translateY(-9px) rotate(-45deg);
+    }
+
+    /* Main Grid Layout */
+    .contact-main-container {
+      position: relative;
+      z-index: 10;
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 130px 40px 80px 40px;
+      display: grid;
+      grid-template-columns: 1fr 1.1fr;
+      gap: 50px;
+      align-items: center;
+      min-height: calc(100vh - 80px);
+    }
+
+    /* Left Column */
+    .left-col {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .section-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--signal, #ff5500);
+      text-transform: uppercase;
+    }
+
+    .hero-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 3.6rem;
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+    }
+
+    .hero-desc {
+      color: #94a3b8;
+      font-size: 1rem;
+      line-height: 1.6;
+      max-width: 440px;
+    }
+
+    .info-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 10px;
+    }
+
+    .info-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .info-icon-box {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: rgba(255, 85, 0, 0.1);
+      border: 1px solid rgba(255, 85, 0, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--signal, #ff5500);
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .info-content label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 2px;
+    }
+
+    .info-content span {
+      font-size: 0.9rem;
+      color: #94a3b8;
+      font-family: 'JetBrains Mono', monospace;
+      word-break: break-all;
+    }
+
+    /* Right Column: Glassmorphic Card */
+    .right-col {
+      perspective: 1200px;
+      position: relative;
+      width: 100%;
+    }
+
+    .glass-card {
+      background: linear-gradient(135deg, rgba(20, 15, 30, 0.85) 0%, rgba(10, 8, 18, 0.92) 100%);
+      border: 1.5px solid rgba(168, 85, 247, 0.4);
+      border-radius: 20px;
+      padding: 36px;
+      box-shadow: 0 0 50px rgba(168, 85, 247, 0.25), inset 0 0 20px rgba(168, 85, 247, 0.1);
+      backdrop-filter: blur(20px);
+      transform: rotateY(-6deg) rotateX(3deg);
+      transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+      position: relative;
+      will-change: transform;
+      width: 100%;
+    }
+
+    .glass-card:hover {
+      transform: rotateY(0deg) rotateX(0deg) scale(1.01);
+      box-shadow: 0 0 70px rgba(168, 85, 247, 0.45);
+    }
+
+    .card-header-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 24px;
+    }
+
+    .card-header-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: rgba(168, 85, 247, 0.2);
+      border: 1px solid rgba(168, 85, 247, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #c084fc;
+      font-size: 0.95rem;
+    }
+
+    .form-grid-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-input {
+      width: 100%;
+      background: rgba(12, 10, 22, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 10px;
+      padding: 14px 16px;
+      color: #fff;
+      font-family: inherit;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-input::placeholder {
+      color: #64748b;
+    }
+
+    .form-input:focus {
+      border-color: #a855f7;
+      box-shadow: 0 0 15px rgba(168, 85, 247, 0.35);
+    }
+
+    textarea.form-input {
+      resize: vertical;
+      min-height: 110px;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 15px;
+      border-radius: 12px;
+      border: none;
+      background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%);
+      color: #fff;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 0 25px rgba(168, 85, 247, 0.5);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 35px rgba(168, 85, 247, 0.7);
+    }
+
+    /* Floating Code Cube */
+    .floating-cube {
+      position: absolute;
+      right: -15px;
+      top: -25px;
+      width: 65px;
+      height: 65px;
+      background: linear-gradient(135deg, rgba(168, 85, 247, 0.4), rgba(59, 130, 246, 0.4));
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 14px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 30px rgba(168, 85, 247, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      font-weight: 900;
+      color: #fff;
+      transform: rotate(15deg) rotateY(-20deg);
+      animation: floatCube 4s infinite alternate ease-in-out;
+      z-index: 5;
+    }
+
+    @keyframes floatCube {
+      0% { transform: translateY(0) rotate(15deg) scale(1); }
+      100% { transform: translateY(-12px) rotate(22deg) scale(1.05); }
+    }
+
+    /* Mobile Responsive Optimizations */
+    @media (max-width: 900px) {
+      .contact-main-container {
+        grid-template-columns: 1fr;
+        padding: 100px 20px 50px 20px;
+        gap: 40px;
+      }
+      .hero-title {
+        font-size: 2.8rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .hamburger-menu {
+        display: flex;
+      }
+
+      .navbar .nav-links {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 100%;
+        height: 100vh;
+        min-height: 100dvh;
+        background: rgba(12, 12, 12, 0.98);
+        backdrop-filter: blur(10px);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 32px;
+        transition: right 0.4s cubic-bezier(0.77, 0, 0.175, 1);
+        z-index: 9999;
+        border-left: 1px solid #262626;
+      }
+
+      .navbar .nav-links.nav-active {
+        right: 0;
+      }
+
+      .navbar .shortcut-badge {
+        display: none;
+      }
+
+      .form-grid-row {
+        grid-template-columns: 1fr;
+      }
+
+      .glass-card {
+        transform: none !important;
+        padding: 24px 20px;
+      }
+
+      .floating-cube {
+        display: none; /* Hide floating cube on small screens to prevent clipping */
+      }
+    }
+  </style>
+</head>
+<body class="contact-body">
+
+  <!-- 3D Particle Grid Wave Canvas -->
+  <canvas id="waveCanvas"></canvas>
+
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="logo">
+      <span class="logo-box">V</span>
+      <span class="logo-text">VIKRAM.EXE</span>
+    </div>
+
+    <!-- Hamburger Menu Toggle for Mobile -->
+    <div class="hamburger-menu" id="hamburgerMenu" aria-label="Toggle Navigation">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+
+    <nav class="nav-links" id="navLinks">
+  <a href="index.html#about">Start</a>
+        <a href="index.html#work">Work</a>
+        <a href="projects.html">Projects</a>
+          <a href="erp-roadmap.html">Skills</a>
+        <a href="contact.html">Contact</a>
+    </nav>
+    <div class="shortcut-badge">Jump ⌘K</div>
+  </header>
+
+  <!-- Main Grid Content -->
+  <main class="contact-main-container">
+    
+    <!-- Left Details Column -->
+    <div class="left-col">
+      <div class="section-tag">GET IN TOUCH</div>
+      <h1 class="hero-title">Let’s Work<br>Together</h1>
+      <p class="hero-desc">
+        Have a project, opportunity, or just want to say hi? I’d love to hear from you.
+      </p>
+
+      <div class="info-list">
+        <div class="info-card">
+          <div class="info-icon-box">✉</div>
+          <div class="info-content">
+            <label>Email</label>
+            <span>boopathyvikram5@gmail.com</span>
+          </div>
+        </div>
+
+        <div class="info-card">
+          <div class="info-icon-box">📞</div>
+          <div class="info-content">
+            <label>Secure Line</label>
+            <span style="color: white;">+91 95009 66472</span>
+          </div>
+        </div>
+
+        <div class="info-card">
+          <div class="info-icon-box">🕒</div>
+          <div class="info-content">
+            <label>Availability</label>
+            <span>Open for opportunities</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Glassmorphic Form with WhatsApp Integration -->
+    <div class="right-col">
+      <div class="floating-cube">&lt;/&gt;</div>
+
+      <div class="glass-card" id="glassCard">
+        <div class="card-header-title">
+          <div class="card-header-icon">✉</div>
+          <span>Send a Message</span>
+        </div>
+
+        <form id="whatsappForm">
+          <div class="form-grid-row">
+            <input type="text" id="senderName" class="form-input" placeholder="Your Name" value="" required>
+            <input type="email" id="senderEmail" class="form-input" placeholder="Your Email" value="" required>
+          </div>
+
+          <div class="form-group">
+            <input type="text" id="senderSubject" class="form-input" placeholder="Subject" required>
+          </div>
+
+          <div class="form-group">
+            <textarea id="senderMessage" class="form-input" placeholder="Your Message..." required></textarea>
+          </div>
+
+          <button type="submit" class="submit-btn">
+            <span>Send to WhatsApp</span>
+            <span>&rarr;</span>
+          </button>
+        </form>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Interactive Smooth JS Engine & WhatsApp Handler -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+      // 1. WhatsApp Form Direct Redirect Handler
+      const form = document.getElementById('whatsappForm');
+      if (form) {
+        form.addEventListener('submit', (e) => {
+          e.preventDefault();
+          
+          const name = document.getElementById('senderName').value;
+          const email = document.getElementById('senderEmail').value;
+          const subject = document.getElementById('senderSubject').value;
+          const message = document.getElementById('senderMessage').value;
+
+          const text = `*New Portfolio Contact Message*%0A%0A*Name:* ${encodeURIComponent(name)}%0A*Email:* ${encodeURIComponent(email)}%0A*Subject:* ${encodeURIComponent(subject)}%0A*Message:* ${encodeURIComponent(message)}`;
+          const phone = '919500966472';
+
+          window.open(`https://wa.me/${phone}?text=${text}`, '_blank');
+        });
+      }
+
+      // 2. Smooth Interactive Card Tilt Effect on Hover (Desktop Only)
+      const glassCard = document.getElementById('glassCard');
+      if (glassCard && window.innerWidth > 768) {
+        document.addEventListener('mousemove', (e) => {
+          const rect = glassCard.getBoundingClientRect();
+          const x = e.clientX - rect.left - rect.width / 2;
+          const y = e.clientY - rect.top - rect.height / 2;
+          
+          const rotX = (-y / rect.height) * 10;
+          const rotY = (x / rect.width) * 10;
+
+          glassCard.style.transform = `perspective(1000px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale3d(1.01, 1.01, 1.01)`;
+        });
+
+        glassCard.addEventListener('mouseleave', () => {
+          glassCard.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+        });
+      }
+
+      // 3. Butter-Smooth 3D Perspective Grid Wave Engine
+      const canvas = document.getElementById('waveCanvas');
+      const ctx = canvas.getContext('2d');
+
+      function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      resize();
+      window.addEventListener('resize', resize);
+
+      let count = 0;
+      const cols = 75;
+      const rows = 42;
+      const separation = 32;
+
+      function drawSmoothedWave() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        count += 0.02;
+
+        const fov = 380;
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height * 0.70;
+
+        for (let ix = 0; ix < cols; ix++) {
+          for (let iy = 0; iy < rows; iy++) {
+            
+            const x = (ix - cols / 2) * separation;
+            const z = (iy * separation) + 90;
+            const y = (Math.sin(ix * 0.18 + count) * 45) + (Math.cos(iy * 0.12 + count) * 35);
+
+            const scale = fov / (fov + z);
+            const px = centerX + x * scale;
+            const py = centerY + y * scale;
+
+            if (scale > 0 && px >= 0 && px <= canvas.width && py >= 0 && py <= canvas.height) {
+              const radius = Math.max(0.5, scale * 2.5);
+              
+              const ratio = iy / rows;
+              const r = Math.floor(168 * (1 - ratio) + 59 * ratio);
+              const g = Math.floor(85 * (1 - ratio) + 130 * ratio);
+              const b = Math.floor(247 * (1 - ratio) + 246 * ratio);
+              const alpha = Math.min(1, scale * 1.4);
+
+              ctx.beginPath();
+              ctx.arc(px, py, radius, 0, Math.PI * 2);
+              ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`;
+              ctx.shadowColor = `rgb(${r}, ${g}, ${b})`;
+              ctx.shadowBlur = scale * 8;
+              ctx.fill();
+            }
+          }
+        }
+
+        requestAnimationFrame(drawSmoothedWave);
+      }
+
+      drawSmoothedWave();
+    });
+  </script>
+
+  <!-- Global Main JavaScript for Mobile Navigation & Hamburger Toggle -->
+  <script src="js/main.js"></script>
+</body>
+</html>

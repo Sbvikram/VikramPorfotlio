@@ -1,0 +1,139 @@
+/* Accordion Layout & Orange Borders */
+/* ====================================
+   Fixed Responsive Timeline & Marker Alignment
+   ==================================== */
+.timeline-container {
+  position: relative;
+  margin-top: 40px;
+  padding-left: 28px; /* Room for left axis line and marker */
+}
+
+/* Vertical Axis Line */
+.timeline-axis {
+  position: absolute;
+  left: 6px;
+  top: 14px;
+  bottom: 14px;
+  width: 2px;
+  background: var(--border-color);
+  z-index: 1;
+}
+
+.timeline-cards-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Timeline Item Wrapper */
+.timeline-item {
+  position: relative;
+  padding-left: 20px; /* Offset card to leave room for marker outside */
+}
+
+/* Left Axis Square Marker - Placed neatly on the vertical axis line */
+.timeline-square-marker {
+  position: absolute;
+  left: -28px; /* Positioned directly centered on vertical axis line */
+  top: 24px; /* Fixed alignment with card title header */
+  width: 14px;
+  height: 14px;
+  background: var(--card-bg);
+  border: 2px solid var(--border-color);
+  border-radius: 2px;
+  z-index: 2;
+  transition: border-color 0.3s, background-color 0.3s;
+}
+
+.timeline-square-marker.active-marker {
+  border-color: var(--accent-orange);
+  background: var(--accent-orange);
+  box-shadow: 0 0 10px rgba(255, 85, 0, 0.4);
+  animation: pulse-square 1.5s infinite;
+}
+
+@keyframes pulse-square {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  50% { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(0.95); opacity: 0.8; }
+}
+
+/* Timeline Card */
+.timeline-accordion-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 28px;
+  cursor: pointer;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Orange Active Border */
+.timeline-accordion-card.active-orange-border {
+  border: 2px solid var(--accent-orange) !important;
+  box-shadow: 0 0 20px rgba(255, 85, 0, 0.15);
+}
+
+.card-header-toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.date-and-toggle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.toggle-icon {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: var(--accent-orange);
+  font-weight: 700;
+}
+
+/* Smooth Accordion Body Expansion */
+.accordion-body {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.4s ease, opacity 0.4s ease, margin-top 0.4s ease;
+}
+
+.timeline-accordion-card.open .accordion-body {
+  max-height: 800px;
+  opacity: 1;
+  margin-top: 20px;
+}
+
+/* Bordered Tag List */
+.work-tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.bordered-tag {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  background: #141414;
+  border: 1px solid #333;
+  color: var(--text-muted);
+  padding: 5px 12px;
+  border-radius: 4px;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .timeline-container {
+    padding-left: 0;
+  }
+  .timeline-item {
+    padding-left: 0;
+  }
+  .timeline-axis, .timeline-square-marker {
+    display: none;
+  }
+}
